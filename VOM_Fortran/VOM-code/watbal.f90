@@ -270,6 +270,7 @@
 
       dtsu = 999999.d0
       do jj = 1, wlayer_
+
         if (dsu(jj) .lt. 0.d0) then
           dtsu = MIN(dtsu, -0.1d0 * su__(jj) / dsu(jj))
         endif
@@ -277,6 +278,7 @@
           dtsu = MIN(dtsu, 0.1d0 * su__(jj) / dsu(jj),                 &
      &               (1.d0 - su__(jj)) / dsu(jj))
         endif
+
       enddo
 
 !     * LENGTH OF TIME STEP

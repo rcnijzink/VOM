@@ -85,11 +85,11 @@
           else
             mqsst_ = 0.9d0 * q_mqx
           endif
-          mqsstmin = MIN(mqsstmin,mqsst_)
+         ! mqsstmin = MIN(mqsstmin,mqsst_)
 
 !         * transpiration, gstom and tissue water
 
-          call vom_tissue_water_et(tp_netass)
+          !call vom_tissue_water_et(tp_netass)
           if (finish .eq. 1) return
 
         endif
@@ -1163,6 +1163,10 @@
       ruptkt_h(:) = 0.d0
       ruptkg_h(:) = 0.d0
 
+!added to set vegetation at 0:
+rlt_h(:) = 0.d0
+jmaxt_h(:)= 0.d0
+jmaxg_h(:)= 0.d0
       return
       end subroutine vom_hourly_init
 
@@ -1180,25 +1184,25 @@
       REAL*8 :: part1, part2, part3, part4, part5
       REAL*8 :: part6, part7, part8, part9
 
-      if (par_h(th_) .gt. 0.d0) then
+!      if (par_h(th_) .gt. 0.d0) then
 !       * adaptation of topt to air temperature during sunlight
-        topt_ = topt_ + i_toptf * (tair_h(th_) + 273.d0 - topt_)
-        jactt(:)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxt_h(:))) * jmaxt_h(:) * o_pct  ! (3.23), (Out[311])
-        jactg(1,:) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(1)  ! (3.23), (Out[311])
-        jactg(2,:) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(2)  ! (3.23), (Out[311])
-        jactg(3,:) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(3)  ! (3.23), (Out[311])
+!        topt_ = topt_ + i_toptf * (tair_h(th_) + 273.d0 - topt_)
+!        jactt(:)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
+!     &             / jmaxt_h(:))) * jmaxt_h(:) * o_pct  ! (3.23), (Out[311])
+!        jactg(1,:) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
+!     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(1)  ! (3.23), (Out[311])
+!        jactg(2,:) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
+!     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(2)  ! (3.23), (Out[311])
+!        jactg(3,:) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
+!     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(3)  ! (3.23), (Out[311])
 
-        cond1      = (2.d0 * p_a * vd_h(th_)) / (ca_h(th_) + 2.d0 * gammastar)
-        cond2      = (4.d0 * ca_h(th_) * rlt_h(2) + 8.d0 * gammastar   &
-     &             * rlt_h(2)) / (ca_h(th_) - gammastar)
-        cond3(:,:) = (4.d0 * ca_h(th_) * rlg_h(:,:) + 8.d0 * gammastar &
-     &             * rlg_h(:,:)) / (ca_h(th_) - gammastar)
+!        cond1      = (2.d0 * p_a * vd_h(th_)) / (ca_h(th_) + 2.d0 * gammastar)
+!        cond2      = (4.d0 * ca_h(th_) * rlt_h(2) + 8.d0 * gammastar   &
+!     &             * rlt_h(2)) / (ca_h(th_) - gammastar)
+!        cond3(:,:) = (4.d0 * ca_h(th_) * rlg_h(:,:) + 8.d0 * gammastar &
+!     &             * rlg_h(:,:)) / (ca_h(th_) - gammastar)
 
-        if (vd_h(th_) .gt. 0.d0 .and. lambdat_d .gt. cond1 .and. jactt(2) .gt. cond2) then
+!        if (vd_h(th_) .gt. 0.d0 .and. lambdat_d .gt. cond1 .and. jactt(2) .gt. cond2) then
 
 !         gstomt = MAX(0.d0, (0.25d0 * (p_a * (ca_h(th_) * (jactt(2)   &
 !    &           - 4.d0 * rlt_h(2)) - 4.d0 * gammastar * (jactt(2)     &
@@ -1215,57 +1219,57 @@
 !    &           * vd_h(th_) * (ca_h(th_) * lambdat_d + 2.d0           &
 !    &           * gammastar * lambdat_d - p_a * vd_h(th_))))
 
-          part1 = ca_h(th_) + 2.d0 * gammastar
-          part2 = part1 * lambdat_d - p_a * vd_h(th_)
-          part3 = p_a * vd_h(th_) * part2
+!          part1 = ca_h(th_) + 2.d0 * gammastar
+!          part2 = part1 * lambdat_d - p_a * vd_h(th_)
+!          part3 = p_a * vd_h(th_) * part2
 
-          part4 = ca_h(th_) * (jactt(2) - 4.d0 * rlt_h(2))
-          part5 = gammastar * jactt(2)
-          part6 = gammastar * 8.d0 * rlt_h(2)
-          part7 = part4 - part5 - part6
+!          part4 = ca_h(th_) * (jactt(2) - 4.d0 * rlt_h(2))
+!          part5 = gammastar * jactt(2)
+!          part6 = gammastar * 8.d0 * rlt_h(2)
+!          part7 = part4 - part5 - part6
 
-          part8 = SQRT(part5 * part7 * (part2 - p_a * vd_h(th_)) ** 2.d0 * part3)
-          part9 = part7 - 3.d0 * part5 + 1.7320508075688772d0 * part8 / part3
+!          part8 = SQRT(part5 * part7 * (part2 - p_a * vd_h(th_)) ** 2.d0 * part3)
+!          part9 = part7 - 3.d0 * part5 + 1.7320508075688772d0 * part8 / part3
 
-          gstomt = 0.25d0 * part9 / part1**2.d0
-          gstomt = MAX(0.d0, gstomt)    ! (Out[314])
+!          gstomt = 0.25d0 * part9 / part1**2.d0
+!          gstomt = MAX(0.d0, gstomt)    ! (Out[314])
 
-        else
-          gstomt = 0.d0
-        endif
-        transpt = p_a * vd_h(th_) * gstomt  ! (3.28) transpiration rate in mol/s
-        etmt__ = (transpt * 18.d0) / (10.d0 ** 6.d0)  ! transpiration rate in m/s
+!        else
+!          gstomt = 0.d0
+!        endif
+!        transpt = p_a * vd_h(th_) * gstomt  ! (3.28) transpiration rate in mol/s
+!        etmt__ = (transpt * 18.d0) / (10.d0 ** 6.d0)  ! transpiration rate in m/s
 
-        where (vd_h(th_) .gt. 0.d0 .and. lambdag_d .gt. cond1 .and. jactg(:,:) .gt. cond3(:,:))
-          gstomg(:,:) = MAX(0.d0,(0.25d0 * (p_a * (ca_h(th_)           &
-     &                * (jactg(:,:) - 4.d0 * rlg_h(:,:)) - 4.d0        &
-     &                * gammastar * (jactg(:,:) + 2.d0 * rlg_h(:,:)))  &
-     &                * vd_h(th_) * (ca_h(th_) * lambdag_d + 2.d0      &
-     &                * gammastar * lambdag_d - p_a * vd_h(th_))       &
-     &                + 1.7320508075688772d0 * SQRT(p_a * gammastar    &
-     &                * jactg(:,:) * (ca_h(th_) * (jactg(:,:) - 4.d0   &
-     &                * rlg_h(:,:)) - gammastar * (jactg(:,:) + 8.d0   &
-     &                * rlg_h(:,:))) * vd_h(th_) * (ca_h(th_)          &
-     &                * lambdag_d + 2.d0 * gammastar * lambdag_d       &
-     &                - 2.d0 * p_a * vd_h(th_)) ** 2.d0 * (ca_h(th_)   &
-     &                * lambdag_d + 2.d0 * gammastar * lambdag_d - p_a &
-     &                * vd_h(th_))))) / (p_a * (ca_h(th_) + 2.d0       &
-     &                * gammastar) ** 2.d0 * vd_h(th_) * (ca_h(th_)    &
-     &                * lambdag_d + 2.d0 * gammastar * lambdag_d       &
-     &                - p_a * vd_h(th_))))  ! (Out[314])
-        elsewhere
-          gstomg(:,:) = 0.d0
-        endwhere
-        transpg(:,:) = p_a * vd_h(th_) * gstomg(:,:)  ! (3.28) transpiration rate in mol/s
-        etmg__(:,:) = (transpg(:,:) * 18.d0) / (10.d0 ** 6.d0)  ! transpiration rate in m/s
-      else
+!        where (vd_h(th_) .gt. 0.d0 .and. lambdag_d .gt. cond1 .and. jactg(:,:) .gt. cond3(:,:))
+!          gstomg(:,:) = MAX(0.d0,(0.25d0 * (p_a * (ca_h(th_)           &
+!     &                * (jactg(:,:) - 4.d0 * rlg_h(:,:)) - 4.d0        &
+!     &                * gammastar * (jactg(:,:) + 2.d0 * rlg_h(:,:)))  &
+!     &                * vd_h(th_) * (ca_h(th_) * lambdag_d + 2.d0      &
+!     &                * gammastar * lambdag_d - p_a * vd_h(th_))       &
+!     &                + 1.7320508075688772d0 * SQRT(p_a * gammastar    &
+!     &                * jactg(:,:) * (ca_h(th_) * (jactg(:,:) - 4.d0   &
+!     &                * rlg_h(:,:)) - gammastar * (jactg(:,:) + 8.d0   &
+!     &                * rlg_h(:,:))) * vd_h(th_) * (ca_h(th_)          &
+!     &                * lambdag_d + 2.d0 * gammastar * lambdag_d       &
+!     &                - 2.d0 * p_a * vd_h(th_)) ** 2.d0 * (ca_h(th_)   &
+!     &                * lambdag_d + 2.d0 * gammastar * lambdag_d - p_a &
+!     &                * vd_h(th_))))) / (p_a * (ca_h(th_) + 2.d0       &
+!     &                * gammastar) ** 2.d0 * vd_h(th_) * (ca_h(th_)    &
+!     &                * lambdag_d + 2.d0 * gammastar * lambdag_d       &
+!     &                - p_a * vd_h(th_))))  ! (Out[314])
+!        elsewhere
+!          gstomg(:,:) = 0.d0
+!        endwhere
+!        transpg(:,:) = p_a * vd_h(th_) * gstomg(:,:)  ! (3.28) transpiration rate in mol/s
+!        etmg__(:,:) = (transpg(:,:) * 18.d0) / (10.d0 ** 6.d0)  ! transpiration rate in m/s
+!      else
         jactt(:)    = 0.d0
         gstomt      = 0.d0
         etmt__      = 0.d0
         jactg(:,:)  = 0.d0
         gstomg(:,:) = 0.d0
         etmg__(:,:) = 0.d0
-      endif
+!      endif
 
       return
       end subroutine vom_gstom
@@ -1305,94 +1309,94 @@
       use vom_vegwat_mod
       implicit none
 
-      if (wlayernew .ge. 1) then
-        pos_ult = MIN(pos_slt, wlayer_)
-        if (q_md .gt. 0.d0) then
-          prootm(1:pos_ult) = (p_mpbar * (-mqt_ + q_mqx) * (750.d0     &
-     &                      - (750.d0 * q_mqx) / (q_md + q_mqx)        &
-     &                      + (q_md + q_mqx) / q_mqx)) / (q_md + q_mqx)&
-     &                      - c_hhydrst(1:pos_ult)  ! (Out[239])
-        else
+     ! if (wlayernew .ge. 1) then
+     !   pos_ult = MIN(pos_slt, wlayer_)
+     !   if (q_md .gt. 0.d0) then
+     !     prootm(1:pos_ult) = (p_mpbar * (-mqt_ + q_mqx) * (750.d0     &
+     !&                      - (750.d0 * q_mqx) / (q_md + q_mqx)        &
+     !&                      + (q_md + q_mqx) / q_mqx)) / (q_md + q_mqx)&
+     !&                      - c_hhydrst(1:pos_ult)  ! (Out[239])
+     !   else
 !         * set tissue suction to the same as in grasses, if no storage capacity
-          prootm(1:pos_ult) = i_prootmg
-        endif
+     !     prootm(1:pos_ult) = i_prootmg
+     !   endif
 
 !       * soil resistance, (Out[ 241] with svolume=s_delz(1:pos_ult)); derived from (3.32)
-        rsoil(1:pos_ult) = SQRT(p_pi / 2.d0) * SQRT((i_rootrad         &
-     &                   * s_delz(1:pos_ult)) / rsurft_(1:pos_ult))    &
-     &                   / kunsat_(1:pos_ult)
+     !   rsoil(1:pos_ult) = SQRT(p_pi / 2.d0) * SQRT((i_rootrad         &
+     !&                   * s_delz(1:pos_ult)) / rsurft_(1:pos_ult))    &
+     !&                   / kunsat_(1:pos_ult)
 
 !       * root water uptake, Chapter 3.3.3.3 (Out[242])
-        if (q_md .gt. 0.d0) then
-          ruptkt__(1:pos_ult) = (-pcap_(1:pos_ult) + prootm(1:pos_ult))&
-     &                        * rsurft_(1:pos_ult) / (i_rrootm         &
-     &                        + rsoil(1:pos_ult))
-          ruptkt__(pos_ult+1:s_maxlayer) = 0.d0
-        else  ! if no storage, uptake happens only when etmt__>0
+    !    if (q_md .gt. 0.d0) then
+    !      ruptkt__(1:pos_ult) = (-pcap_(1:pos_ult) + prootm(1:pos_ult))&
+    ! &                        * rsurft_(1:pos_ult) / (i_rrootm         &
+    ! &                        + rsoil(1:pos_ult))
+    !      ruptkt__(pos_ult+1:s_maxlayer) = 0.d0
+    !    else  ! if no storage, uptake happens only when etmt__>0
 
-          if (etmt__ .gt. 0.d0) then
-            ruptkt__(1:pos_ult) = MAX(0.d0,(-pcap_(1:pos_ult)          &
-     &                          + prootm(1:pos_ult)) * rsurft_(1:pos_ult) &
-     &                          / (i_rrootm + rsoil(1:pos_ult)))
-            ruptkt__(pos_ult+1:s_maxlayer) = 0.d0
+    !      if (etmt__ .gt. 0.d0) then
+    !        ruptkt__(1:pos_ult) = MAX(0.d0,(-pcap_(1:pos_ult)          &
+    ! &                          + prootm(1:pos_ult)) * rsurft_(1:pos_ult) &
+    ! &                          / (i_rrootm + rsoil(1:pos_ult)))
+     !       ruptkt__(pos_ult+1:s_maxlayer) = 0.d0
 
-            if (SUM(ruptkt__(:)) .gt. 0.d0) then
-              if (etmt__ .gt. SUM(ruptkt__(:))) then
-                changef = 1.d0
-                etmt__   = SUM(ruptkt__(:))
-                transpt = etmt__ * 55555.555555555555d0  ! (Out[249]) mol/s=m/s*10^6 g/m/(18g/mol)
-                gstomt = transpt / (p_a * vd_h(th_))
-              endif
+    !        if (SUM(ruptkt__(:)) .gt. 0.d0) then
+    !          if (etmt__ .gt. SUM(ruptkt__(:))) then
+    !            changef = 1.d0
+    !            etmt__   = SUM(ruptkt__(:))
+    !            transpt = etmt__ * 55555.555555555555d0  ! (Out[249]) mol/s=m/s*10^6 g/m/(18g/mol)
+    !            gstomt = transpt / (p_a * vd_h(th_))
+    !          endif
 !             * Setting SUM(ruptkt__)=etmt__ and distributing according to relative uptake:
-              ruptkt__(:) = etmt__ * (ruptkt__(:) / (SUM(ruptkt__(:))))
-            else
-              ruptkt__(:) = 0.d0
-              changef     = 1.d0
-              etmt__      = 0.d0
-              transpt     = 0.d0
-              gstomt      = 0.d0
-            endif
+    !          ruptkt__(:) = etmt__ * (ruptkt__(:) / (SUM(ruptkt__(:))))
+    !       else
+    !          ruptkt__(:) = 0.d0
+    !         changef     = 1.d0
+    !          etmt__      = 0.d0
+    !          transpt     = 0.d0
+    !          gstomt      = 0.d0
+    !        endif
 
-          else
-            ruptkt__(:) = 0.d0
-          endif
+    !      else
+    !        ruptkt__(:) = 0.d0
+    !      endif
 
-        endif
+    !    endif
 
-        pos_ulg = MIN(pos_slg, wlayer_)
-        if (MAXVAL(etmg__(:,:)) .gt. 0.d0) then
+    !    pos_ulg = MIN(pos_slg, wlayer_)
+    !    if (MAXVAL(etmg__(:,:)) .gt. 0.d0) then
 !         * root uptake by grasses can not be negative, as storage negligible
-          ruptkg__(1:pos_slg) = MAX(0.d0,((-pcap_(1:pos_ulg)           &
-     &                        + (i_prootmg - c_hhydrst(1:pos_ulg)))    &
-     &                        * rsurfg_(:)) / (i_rrootm + (SQRT(p_pi / 2.d0)  &
-     &                        * SQRT(i_rootrad * s_delz(1:pos_ulg)     &
-     &                        / rsurfg_(:))) / kunsat_(1:pos_ulg)))
-          ruptkg__(pos_ulg+1:s_maxlayer) = 0.d0
-          if (SUM(ruptkg__(:)) .gt. 0.d0) then
-            where (etmg__(:,:) .gt. SUM(ruptkg__(:)))
-              rootlim(:,:)  = 1.d0
-              etmg__(:,:)   = SUM(ruptkg__(:))
-              transpg(:,:)  = etmg__(:,:) * 55555.555555555555d0  ! (Out[249]) mol/s=m/s*10^6 g/m/(18g/mol)
-              gstomg(:,:)   = transpg(:,:) / (p_a * vd_h(th_))
-            end where
-            ruptkg__(1:pos_ulg) = etmg__(2,2) * (ruptkg__(1:pos_ulg)   &
-     &                          / (SUM(ruptkg__(:))))
-          else
-            ruptkg__(:)  = 0.d0
-            etmg__(:,:)  = 0.d0
-            transpg(:,:) = 0.d0
-            gstomg(:,:)  = 0.d0
-          endif
-        else
-          ruptkg__(:) = 0.d0
-        endif
-      else
+     !     ruptkg__(1:pos_slg) = MAX(0.d0,((-pcap_(1:pos_ulg)           &
+     !&                        + (i_prootmg - c_hhydrst(1:pos_ulg)))    &
+     !&                        * rsurfg_(:)) / (i_rrootm + (SQRT(p_pi / 2.d0)  &
+     !&                        * SQRT(i_rootrad * s_delz(1:pos_ulg)     &
+     !&                        / rsurfg_(:))) / kunsat_(1:pos_ulg)))
+     !     ruptkg__(pos_ulg+1:s_maxlayer) = 0.d0
+     !     if (SUM(ruptkg__(:)) .gt. 0.d0) then
+     !       where (etmg__(:,:) .gt. SUM(ruptkg__(:)))
+     !         rootlim(:,:)  = 1.d0
+     !         etmg__(:,:)   = SUM(ruptkg__(:))
+     !         transpg(:,:)  = etmg__(:,:) * 55555.555555555555d0  ! (Out[249]) mol/s=m/s*10^6 g/m/(18g/mol)
+     !         gstomg(:,:)   = transpg(:,:) / (p_a * vd_h(th_))
+     !       end where
+     !       ruptkg__(1:pos_ulg) = etmg__(2,2) * (ruptkg__(1:pos_ulg)   &
+     !&                          / (SUM(ruptkg__(:))))
+      !    else
+      !      ruptkg__(:)  = 0.d0
+      !      etmg__(:,:)  = 0.d0
+      !      transpg(:,:) = 0.d0
+      !      gstomg(:,:)  = 0.d0
+      !    endif
+      !  else
+      !    ruptkg__(:) = 0.d0
+      !  endif
+      !else
         ruptkg__(:)  = 0.d0
         ruptkt__(:)  = 0.d0
         etmg__(:,:)  = 0.d0
         transpg(:,:) = 0.d0
         gstomg(:,:)  = 0.d0
-      endif
+      !endif
 
       return
       end subroutine vom_rootuptake
@@ -1432,6 +1436,8 @@
       mqss_out = q_mqx * (mul1 - mul2) / mul1
       mqss_out = MAX(0.9d0 * q_mqx, mqss_out)
 
+!added to switch off vegetation:
+mqss_out = 0.0d0
       return
       end subroutine vom_mqss
 

@@ -8,7 +8,7 @@
 #Adjustments:  
 
 #The name of the exetuble (the final program)
-PROGRAM  = model.x
+PROGRAM  = model_noveg.x
 
 
 FC      := /usr/bin/gfortran #compiler name and directory
