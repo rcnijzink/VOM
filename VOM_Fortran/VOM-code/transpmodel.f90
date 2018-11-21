@@ -1267,6 +1267,44 @@
         etmg__(:,:) = 0.d0
       endif
 
+
+
+      !check if date equals end of growing season
+      if( (fday(nday) .eq. targetday ) .and. &
+          (fmonth(nday) .eq. targetmonth ) ) then
+
+        !check if target reached
+        if( netassg  .ge. i_target         ) then
+
+          jactg(:,:)  = 0.d0
+          gstomg(:,:) = 0.d0
+          etmg__(:,:) = 0.d0
+          netassg = 0.d0
+          growthseas = .False.
+        else
+          !grasses die
+
+        end if
+
+      end if
+
+      !check if date equals start of growing season
+      if( (fday(nday) .eq. startgday ) .and. &
+          (fmonth(nday) .eq. startgmonth ) ) then
+          growthseas = .TRUE.
+      end if
+
+      !when out of the growing season, no assg and etmg
+      if( growthseas .eqv. .False.) then
+          jactg(:,:)  = 0.d0
+          gstomg(:,:) = 0.d0
+          etmg__(:,:) = 0.d0
+          netassg = 0.d0
+      end if
+
+
+
+
       return
       end subroutine vom_gstom
 
