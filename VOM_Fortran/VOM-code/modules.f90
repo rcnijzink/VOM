@@ -366,7 +366,7 @@
       !$OMP asst_h, asst_d, asst_y, assg_h, assg_d, assg_y, &
       !$OMP q_cpcct_d, cpcct_y, cpccg_d, cpccg_y, etmt__, etmt_h, etmt_d, etmt_y, etmg__, etmg_h, &
       !$OMP etmg_d, etmg_y, etm_y, mqt_, mqtnew, mqtold, dmqt, q_mqx, mqsst_, mqsstmin, q_md, &
-      !$OMP o_mdstore, o_rtdepth, o_rgdepth, pos_slt, pos_slg, pos_ult, pos_ulg, changef, &
+      !$OMP o_mdstore, o_rtdepth, o_rgdepth, o_target, pos_slt, pos_slg, pos_ult, pos_ulg, changef, &
       !$OMP rootlim, posmna, &
       !$OMP ruptkt__, rsurft_, rsurftnew, prootm, ruptkt_d, ruptkt_h, ruptkg_h, ruptkg_d, &
       !$OMP refft, reffg, ruptkg__, rsurfg_, rsurfgnew, rsoil,      &  
