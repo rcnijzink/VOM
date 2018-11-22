@@ -343,6 +343,10 @@
      &        * pcapnew(wlayernew) / s_delz(wlayernew)
       endif
 
+      if(zwnew .gt. i_cz) then
+         zwnew = i_cz - 1.d-16 !1.d-16 to avoid numerical issues
+      end if
+
       return
       end subroutine waterbalance_update_state
 
