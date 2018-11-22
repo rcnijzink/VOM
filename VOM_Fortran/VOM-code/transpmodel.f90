@@ -39,6 +39,7 @@
 
       INTEGER, INTENT(in)    :: dim_invar
       REAL*8,  INTENT(inout) :: tp_netass
+      REAL*8                 :: netassg
       INTEGER, INTENT(in)    :: option1
       REAL*8, DIMENSION(dim_invar), INTENT(in) :: invar
       !REAL*8, ALLOCATABLE, DIMENSION(:,:) :: output_mat
@@ -62,7 +63,7 @@
 
 !     * calculate gstom, et and ass
 
-      call vom_gstom()
+      call vom_gstom(tp_netass, netassg)
 
 !     * SUB-HOURLY LOOPS
 
@@ -109,10 +110,23 @@
 
       enddo
 
+      if( growthseas .eqv. .TRUE.) then
 !     * rl does not need to be included here as ass=-rl if j=0 (at night)
-      tp_netass = tp_netass + asst_h(2) - 3600.d0 * (q_cpcct_d + rrt_d &
-     &          + q_tct_d) + assg_h(2,2) - 3600.d0 * (cpccg_d(2)       &
-     &          + rrg_d + tcg_d(2))
+         tp_netass = tp_netass + asst_h(2) - 3600.d0 * (q_cpcct_d + rrt_d &
+        &          + q_tct_d) + assg_h(2,2) - 3600.d0 * (cpccg_d(2)       &
+        &          + rrg_d + tcg_d(2))
+
+
+          netassg = netassg + assg_h(2,2) - 3600.d0 * (cpccg_d(2)       &
+         &          + rrg_d + tcg_d(2))
+
+      else
+         !assume no maintenance costs for grasses in winter (???)
+         tp_netass = tp_netass + asst_h(2) - 3600.d0 * (q_cpcct_d + rrt_d &
+         &          + q_tct_d) 
+
+      end if
+
 
       asst_d(:)   = asst_d(:)   + asst_h(:)
       assg_d(:,:) = assg_d(:,:) + assg_h(:,:)
@@ -375,14 +389,15 @@
       if (vom_npar .ge. 6) o_rtdepth  = vom_invar(6)
       if (vom_npar .ge. 7) o_mdstore  = vom_invar(7)
       if (vom_npar .ge. 8) o_rgdepth  = vom_invar(8)
-      if (vom_npar .ge. 9)  i_cgs     = vom_invar(9)
-      if (vom_npar .ge. 10) i_zr      = vom_invar(10)
-      if (vom_npar .ge. 11) i_go      = vom_invar(11)
-      if (vom_npar .ge. 12) i_ksat    = vom_invar(12)
-      if (vom_npar .ge. 13) i_thetar  = vom_invar(13)
-      if (vom_npar .ge. 14) i_thetas  = vom_invar(14)
-      if (vom_npar .ge. 15) i_nvg     = vom_invar(15)
-      if (vom_npar .ge. 16) i_avg     = vom_invar(16)
+      if (vom_npar .ge. 9) o_target   = vom_invar(9)
+      if (vom_npar .ge. 10) i_cgs     = vom_invar(10)
+      if (vom_npar .ge. 11) i_zr      = vom_invar(11)
+      if (vom_npar .ge. 12) i_go      = vom_invar(12)
+      if (vom_npar .ge. 13) i_ksat    = vom_invar(13)
+      if (vom_npar .ge. 14) i_thetar  = vom_invar(14)
+      if (vom_npar .ge. 15) i_thetas  = vom_invar(15)
+      if (vom_npar .ge. 16) i_nvg     = vom_invar(16)
+      if (vom_npar .ge. 17) i_avg     = vom_invar(17)
 
 
 !***********************************************************************
@@ -424,10 +439,12 @@
      &                    i_rrootm, i_rsurfmin, i_rsurf_, i_rootrad,   &
      &                    i_prootmg, i_growthmax, i_incrcovg,          &
      &                    i_incrjmax,                                  &
+     &                    i_startgday,i_startgmonth, i_targetday,      &
+     &                    i_targetmonth,                               &
      &                    i_firstyear,i_lastyear, i_write_h, i_read_pc,&
      &                    i_inputpath, i_outputpath,                   &
      &                    o_lambdagf, o_wsgexp, o_lambdatf, o_wstexp,  &
-     &                    o_pct, o_rtdepth, o_mdstore, o_rgdepth
+     &                    o_pct, o_rtdepth, o_mdstore, o_rgdepth, o_target
 
       namelist /input2par/ i_lat, i_cz, i_cgs, i_zr, i_go, i_ksat,     &
      &                     i_thetar, i_thetas, i_nvg, i_avg, i_delz
@@ -1171,10 +1188,12 @@
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !*-----calculate gstom, et and ass -------------------------------------
 
-      subroutine vom_gstom ()
+      subroutine vom_gstom (tp_netass, netassg)
       use vom_vegwat_mod
       implicit none
 
+      REAL*8,  INTENT(inout) :: netassg
+      REAL*8,  INTENT(inout) :: tp_netass
       REAL*8 :: cond1, cond2
       REAL*8 :: cond3(3,3)
       REAL*8 :: part1, part2, part3, part4, part5
@@ -1270,11 +1289,11 @@
 
 
       !check if date equals end of growing season
-      if( (fday(nday) .eq. targetday ) .and. &
-          (fmonth(nday) .eq. targetmonth ) ) then
+      if( (fday(nday) .eq. i_targetday ) .and. &
+          (fmonth(nday) .eq. i_targetmonth ) ) then
 
         !check if target reached
-        if( netassg  .ge. i_target         ) then
+        if( netassg  .ge. o_target         ) then
 
           jactg(:,:)  = 0.d0
           gstomg(:,:) = 0.d0
@@ -1282,24 +1301,24 @@
           netassg = 0.d0
           growthseas = .False.
         else
-          !grasses die
-
+          !grasses die, carbon gets lost
+          tp_netass = tp_netass - netassg
+          netassg = 0.d0
         end if
 
       end if
 
       !check if date equals start of growing season
-      if( (fday(nday) .eq. startgday ) .and. &
-          (fmonth(nday) .eq. startgmonth ) ) then
+      if( (fday(nday) .eq. i_startgday ) .and. &
+          (fmonth(nday) .eq. i_startgmonth ) ) then
           growthseas = .TRUE.
       end if
 
       !when out of the growing season, no assg and etmg
-      if( growthseas .eqv. .False.) then
+      if( growthseas .eqv. .FALSE.) then
           jactg(:,:)  = 0.d0
           gstomg(:,:) = 0.d0
           etmg__(:,:) = 0.d0
-          netassg = 0.d0
       end if
 
 
@@ -1598,6 +1617,8 @@
         etmg_h      = etmg_h      + dt_ * etmg__(2,2)
         sumruptkt_h = sumruptkt_h + dt_ * SUM(ruptkt__(:))
       endif
+
+  
 
       return
       end subroutine vom_add_hourly

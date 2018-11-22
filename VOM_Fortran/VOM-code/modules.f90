@@ -259,6 +259,8 @@
       REAL*8  :: q_md                     ! Tree dry mass per unit ground area
       REAL*8  :: o_mdstore = 1.000000d+02 ! Wood water storage parameter of trees
 
+      LOGICAL :: growthseas               !TRUE for growthseason, false otherwise
+
 !     * roots
 
       REAL*8  :: o_rtdepth = 0.300000d+01 ! Tree rooting depth (m)
@@ -343,8 +345,11 @@
       INTEGER :: i_write_h = 0          ! Flag to write out hourly input values after conversation from daily values
       INTEGER :: i_read_pc = 0          ! Flag to write out hourly input values after conversation from daily values
 
-
-
+      INTEGER :: i_startgday = 1       ! Start of growing season
+      INTEGER :: i_startgmonth = 4     ! Start of growing season
+      INTEGER :: i_targetday = 30      ! End of growing season, target evaluated
+      INTEGER :: i_targetmonth = 9     ! End of growing season, target evaluated
+      INTEGER :: o_target = 1000       ! Target NCP-value for grasses
 !     * Derived parameters
 
       REAL*8  :: c_epsln                ! Soil porosity
