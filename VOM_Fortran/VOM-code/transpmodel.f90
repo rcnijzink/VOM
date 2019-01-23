@@ -1303,6 +1303,7 @@
         else
           !grasses die, carbon gets lost
           tp_netass = tp_netass - netassg
+          pcg_d = 0.d0
           netassg = 0.d0
         end if
 
