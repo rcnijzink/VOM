@@ -1143,15 +1143,20 @@
      &           + i_hd) * jmax25g_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
      &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
      &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)
-      rlg_h(1,:) = ((ca_h(th_) - gammastar) * pcg_d(1) * jmaxg_h(:)    &
-     &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
-     &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-      rlg_h(2,:) = ((ca_h(th_) - gammastar) * pcg_d(2) * jmaxg_h(:)    &
-     &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
-     &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-      rlg_h(3,:) = ((ca_h(th_) - gammastar) * pcg_d(3) * jmaxg_h(:)    &
-     &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
-     &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
+      if( growthseas .eqv. .TRUE.) then
+         rlg_h(1,:) = ((ca_h(th_) - gammastar) * pcg_d(1) * jmaxg_h(:)    &
+        &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
+        &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
+         rlg_h(2,:) = ((ca_h(th_) - gammastar) * pcg_d(2) * jmaxg_h(:)    &
+        &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
+        &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
+         rlg_h(3,:) = ((ca_h(th_) - gammastar) * pcg_d(3) * jmaxg_h(:)    &
+        &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
+        &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
+     else
+         rlg_h(:,:) = 0
+     end if 
+
 
 !     * daily recalculation for resultsdaily
       if (optmode .eq. 0) then
