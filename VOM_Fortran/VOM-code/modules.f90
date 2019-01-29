@@ -140,6 +140,7 @@
       INTEGER :: nhour                  ! Hour of day
       INTEGER :: th_                    ! Hour since start of run
       INTEGER :: c_testday              ! Number of days for initial check if netass>0
+      INTEGER :: growthdays             ! Day since start of growthseason
 
       INTEGER, ALLOCATABLE :: fyear(:)    ! Year for each day
       INTEGER, ALLOCATABLE :: fmonth(:)   ! Month for each day
@@ -347,9 +348,9 @@
 
       INTEGER :: i_startgday = 1       ! Start of growing season
       INTEGER :: i_startgmonth = 4     ! Start of growing season
-      INTEGER :: i_targetday = 30      ! End of growing season, target evaluated
-      INTEGER :: i_targetmonth = 9     ! End of growing season, target evaluated
-      INTEGER :: o_target = 1000       ! Target NCP-value for grasses
+      INTEGER :: i_startrep = 30       ! Number of days before seeds are produced
+      INTEGER :: i_endgrowth = 90      ! Length of growing season (days), target evaluated
+      INTEGER :: o_target = 1000       ! initial target NCP-value for grasses, adjusted during runs
 !     * Derived parameters
 
       REAL*8  :: c_epsln                ! Soil porosity

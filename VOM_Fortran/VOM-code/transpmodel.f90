@@ -438,9 +438,8 @@
      &                    i_toptstart, i_rlratio, i_mdtf, i_mqxtf,     &
      &                    i_rrootm, i_rsurfmin, i_rsurf_, i_rootrad,   &
      &                    i_prootmg, i_growthmax, i_incrcovg,          &
-     &                    i_incrjmax,                                  &
-     &                    i_startgday,i_startgmonth, i_targetday,      &
-     &                    i_targetmonth,                               &
+     &                    i_incrjmax, i_startrep, i_endgrowth,         &
+     &                    i_startgday,i_startgmonth,                  &
      &                    i_firstyear,i_lastyear, i_write_h, i_read_pc,&
      &                    i_inputpath, i_outputpath,                   &
      &                    o_lambdagf, o_wsgexp, o_lambdatf, o_wstexp,  &
@@ -1142,6 +1141,8 @@
      &           + topt_)) / (25.d0 + 273.d0 * p_R_ * topt_))) * i_ha  &
      &           + i_hd) * jmax25g_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
      &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
+
+!    * Only respiration of grasses during the growth season
      &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)
       if( growthseas .eqv. .TRUE.) then
          rlg_h(1,:) = ((ca_h(th_) - gammastar) * pcg_d(1) * jmaxg_h(:)    &
@@ -1154,7 +1155,7 @@
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
      else
-         rlg_h(:,:) = 0
+         rlg_h(:,:) = 0.d0
      end if 
 
 
@@ -1294,8 +1295,7 @@
 
 
       !check if date equals end of growing season
-      if( (fday(nday) .eq. i_targetday ) .and. &
-          (fmonth(nday) .eq. i_targetmonth ) ) then
+      if( growthdays .eq. i_endgrowth ) then
 
         !check if target reached
         if( netassg  .ge. o_target         ) then
@@ -1325,9 +1325,19 @@
           jactg(:,:)  = 0.d0
           gstomg(:,:) = 0.d0
           etmg__(:,:) = 0.d0
+          growthdays  = 0.d0
+      else
+          growthdays = growthdays + 1.d0
       end if
 
+      !check if date equals start of reproductive phase
+      !set target ncp for that year, i.e. number of seeds to be produced
+      if( growthdays .eq. i_startrep ) then
+ 
+      !assume linear extrapolation of current ncp-levels grasses   
+      o_target = ( netassg / i_startrep ) * i_endgrowth
 
+      end if
 
 
       return
