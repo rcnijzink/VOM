@@ -1306,10 +1306,13 @@
           netassg = 0.d0
           growthseas = .False.
         else
-          !grasses die, carbon gets lost
-          tp_netass = tp_netass - netassg
-          pcg_d = 0.d0
-          netassg = 0.d0
+          ! part of grasses die, carbon gets lost
+          ! remove percentage of grass carbon of died partition
+          tp_netass = tp_netass - netassg * (1.d0 - netassg/o_target)
+
+          ! remaining coverage plants
+          pcg_d = pcg_d * netassg/o_target
+
         end if
 
       end if
