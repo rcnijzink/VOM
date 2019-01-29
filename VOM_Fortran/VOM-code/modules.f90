@@ -348,9 +348,9 @@
 
       INTEGER :: i_startgday = 1       ! Start of growing season
       INTEGER :: i_startgmonth = 4     ! Start of growing season
-      INTEGER :: i_startrep = 30       ! Number of days before seeds are produced
-      INTEGER :: i_endgrowth = 90      ! Length of growing season (days), target evaluated
-      INTEGER :: o_target = 1000       ! initial target NCP-value for grasses, adjusted during runs
+      REAL*8  :: i_startrep = 30       ! Number of days before seeds are produced
+      REAL*8  :: i_endgrowth = 90      ! Length of growing season (days), target evaluated
+      REAL*8 :: o_target = 1000       ! initial target NCP-value for grasses, adjusted during runs
 !     * Derived parameters
 
       REAL*8  :: c_epsln                ! Soil porosity

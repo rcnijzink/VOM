@@ -1277,7 +1277,7 @@
      &                * vd_h(th_))))) / (p_a * (ca_h(th_) + 2.d0       &
      &                * gammastar) ** 2.d0 * vd_h(th_) * (ca_h(th_)    &
      &                * lambdag_d + 2.d0 * gammastar * lambdag_d       &
-     &                - p_a * vd_h(th_))))  ! (Out[314])
+     &                - p_a * vd_h(th_))))  ! (Out[314])    
         elsewhere
           gstomg(:,:) = 0.d0
         endwhere
@@ -1295,7 +1295,7 @@
 
 
       !check if date equals end of growing season
-      if( growthdays .eq. i_endgrowth ) then
+      if( (growthdays .eq. i_endgrowth) .and. (nhour .eq. 1) ) then
 
         !check if target reached
         if( netassg  .ge. o_target         ) then
@@ -1330,12 +1330,13 @@
           etmg__(:,:) = 0.d0
           growthdays  = 0.d0
       else
-          growthdays = growthdays + 1.d0
+          growthdays = growthdays + nhour/24
       end if
+
 
       !check if date equals start of reproductive phase
       !set target ncp for that year, i.e. number of seeds to be produced
-      if( growthdays .eq. i_startrep ) then
+      if( (growthdays .eq. i_startrep) .and. (nhour .eq. 1) ) then
  
       !assume linear extrapolation of current ncp-levels grasses   
       o_target = ( netassg / i_startrep ) * i_endgrowth
