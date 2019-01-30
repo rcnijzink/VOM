@@ -39,7 +39,7 @@
 
       INTEGER, INTENT(in)    :: dim_invar
       REAL*8,  INTENT(inout) :: tp_netass
-      REAL*8                 :: netassg
+      REAL*8                 :: seedpool
       INTEGER, INTENT(in)    :: option1
       REAL*8, DIMENSION(dim_invar), INTENT(in) :: invar
       !REAL*8, ALLOCATABLE, DIMENSION(:,:) :: output_mat
@@ -63,7 +63,7 @@
 
 !     * calculate gstom, et and ass
 
-      call vom_gstom(tp_netass, netassg)
+      call vom_gstom(tp_netass, seedpool)
 
 !     * SUB-HOURLY LOOPS
 
@@ -110,20 +110,18 @@
 
       enddo
 
-      if( growthseas .eqv. .TRUE.) then
-!     * rl does not need to be included here as ass=-rl if j=0 (at night)
+      !carbon goes to seeds when vegetation is in reproductive phase
+      if( (growthseas .eqv. .TRUE.) .and. (growthdays .ge. i_startrep) ) then
+         seedpool = seedpool + i_seedcosts
+
          tp_netass = tp_netass + asst_h(2) - 3600.d0 * (q_cpcct_d + rrt_d &
-        &          + q_tct_d) + assg_h(2,2) - 3600.d0 * (cpccg_d(2)       &
-        &          + rrg_d + tcg_d(2))
-
-
-          netassg = netassg + assg_h(2,2) - 3600.d0 * (cpccg_d(2)       &
-         &          + rrg_d + tcg_d(2))
-
+         &          + q_tct_d) + assg_h(2,2) - 3600.d0 * (cpccg_d(2)       &
+         &          + rrg_d + tcg_d(2) + i_seedcosts)
+      !Q. remove tcg_d, foliage turnover costs?
       else
-         !assume no maintenance costs for grasses in winter (???)
          tp_netass = tp_netass + asst_h(2) - 3600.d0 * (q_cpcct_d + rrt_d &
-         &          + q_tct_d) 
+         &          + q_tct_d) + assg_h(2,2) - 3600.d0 * (cpccg_d(2)       &
+         &          + rrg_d + tcg_d(2) )
 
       end if
 
@@ -438,8 +436,9 @@
      &                    i_toptstart, i_rlratio, i_mdtf, i_mqxtf,     &
      &                    i_rrootm, i_rsurfmin, i_rsurf_, i_rootrad,   &
      &                    i_prootmg, i_growthmax, i_incrcovg,          &
-     &                    i_incrjmax, i_startrep, i_endgrowth,         &
-     &                    i_startgday,i_startgmonth,                  &
+     &                    i_incrjmax, i_seedcosts, i_startrep,         &
+     &                    i_endgrowth1, i_endgrowth2,                  &
+     &                    i_startgday,i_startgmonth,                   &
      &                    i_firstyear,i_lastyear, i_write_h, i_read_pc,&
      &                    i_inputpath, i_outputpath,                   &
      &                    o_lambdagf, o_wsgexp, o_lambdatf, o_wstexp,  &
@@ -1144,7 +1143,7 @@
 
 !    * Only respiration of grasses during the growth season
      &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)
-      if( growthseas .eqv. .TRUE.) then
+
          rlg_h(1,:) = ((ca_h(th_) - gammastar) * pcg_d(1) * jmaxg_h(:)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
@@ -1154,9 +1153,6 @@
          rlg_h(3,:) = ((ca_h(th_) - gammastar) * pcg_d(3) * jmaxg_h(:)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-     else
-         rlg_h(:,:) = 0.d0
-     end if 
 
 
 !     * daily recalculation for resultsdaily
@@ -1194,11 +1190,11 @@
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !*-----calculate gstom, et and ass -------------------------------------
 
-      subroutine vom_gstom (tp_netass, netassg)
+      subroutine vom_gstom (tp_netass, seedpool)
       use vom_vegwat_mod
       implicit none
 
-      REAL*8,  INTENT(inout) :: netassg
+      REAL*8,  INTENT(inout) :: seedpool
       REAL*8,  INTENT(inout) :: tp_netass
       REAL*8 :: cond1, cond2
       REAL*8 :: cond3(3,3)
@@ -1295,26 +1291,22 @@
 
 
       !check if date equals end of growing season
-      if( (growthdays .eq. i_endgrowth) .and. (nhour .eq. 1) ) then
+      if( (growthdays .eq. i_endgrowth2) .and. (nhour .eq. 1) ) then
 
         !check if target reached
-        if( netassg  .ge. o_target         ) then
+        if( seedpool  .ge. target1         ) then
 
-          jactg(:,:)  = 0.d0
-          gstomg(:,:) = 0.d0
-          etmg__(:,:) = 0.d0
-          netassg = 0.d0
-          growthseas = .False.
+           !seed production was succesfull, add to NCP
+           tp_netass = tp_netass + seedpool
+           seedpool = 0.d0
         else
-          ! part of grasses die, carbon gets lost
-          ! remove percentage of grass carbon of died partition
-          tp_netass = tp_netass - netassg * (1.d0 - netassg/o_target)
-
-          ! remaining coverage plants
-          pcg_d = pcg_d * netassg/o_target
-
+           !seeds get lost
+           seedpool = 0.d0
         end if
 
+          !growthseason ended
+          growthseas = .FALSE.
+          growthdays = 0.d0
       end if
 
       !check if date equals start of growing season
@@ -1323,23 +1315,20 @@
           growthseas = .TRUE.
       end if
 
-      !when out of the growing season, no assg and etmg
-      if( growthseas .eqv. .FALSE.) then
-          jactg(:,:)  = 0.d0
-          gstomg(:,:) = 0.d0
-          etmg__(:,:) = 0.d0
-          growthdays  = 0.d0
-      else
+      !count growthdays when in growthseason
+      if( growthseas .eqv. .TRUE.) then
           growthdays = growthdays + nhour/24
       end if
 
-
       !check if date equals start of reproductive phase
-      !set target ncp for that year, i.e. number of seeds to be produced
+      !set target ncp for that year, i.e. max. number of seeds to be produced
       if( (growthdays .eq. i_startrep) .and. (nhour .eq. 1) ) then
  
-      !assume linear extrapolation of current ncp-levels grasses   
-      o_target = ( netassg / i_startrep ) * i_endgrowth
+      !assume linear
+      target1 = ( netassg / i_startrep ) * i_endgrowth1
+
+      !assume linear extrapolation of current ncp-levels grasses for max  
+      target2 = ( netassg / i_startrep ) * i_endgrowth2
 
       end if
 
@@ -2022,16 +2011,58 @@
       REAL*8  :: netcg_d(3,3)           ! Daily grass net carbon profit
       INTEGER :: posma(1)               ! Pointer to variable values that achieved maximum assimilation
 
-      posma(:)     = MAXLOC(asst_d(:))
-      jmax25t_d(2) = jmax25t_d(posma(1))
-      asst_d(:)    = 0.d0
-      netcg_d(1,:) = assg_d(1,:) - 3600.d0 * 24.d0 * (cpccg_d(1) + rrg_d + tcg_d(1))
-      netcg_d(2,:) = assg_d(2,:) - 3600.d0 * 24.d0 * (cpccg_d(2) + rrg_d + tcg_d(2))
-      netcg_d(3,:) = assg_d(3,:) - 3600.d0 * 24.d0 * (cpccg_d(3) + rrg_d + tcg_d(3))
-      posmna(:)    = MAXLOC(netcg_d(:,:))
-      pcg_d(2)     = MIN(1.d0 - o_pct, pcg_d(posmna(1)))
-      jmax25g_d(2) = jmax25g_d(posmna(2))
-      assg_d(:,:)  = 0.d0
+
+      !only change in foliage when grasses are in not reproductive phase
+      if( (growthseas .eqv. .FALSE.) .or. (growthdays .lt. i_startrep) ) then
+        posma(:)     = MAXLOC(asst_d(:))
+        jmax25t_d(2) = jmax25t_d(posma(1))
+        asst_d(:)    = 0.d0
+        netcg_d(1,:) = assg_d(1,:) - 3600.d0 * 24.d0 * (cpccg_d(1) + rrg_d + tcg_d(1))
+        netcg_d(2,:) = assg_d(2,:) - 3600.d0 * 24.d0 * (cpccg_d(2) + rrg_d + tcg_d(2))
+        netcg_d(3,:) = assg_d(3,:) - 3600.d0 * 24.d0 * (cpccg_d(3) + rrg_d + tcg_d(3))
+        posmna(:)    = MAXLOC(netcg_d(:,:))
+        pcg_d(2)     = MIN(1.d0 - o_pct, pcg_d(posmna(1)))
+        jmax25g_d(2) = jmax25g_d(posmna(2))
+        assg_d(:,:)  = 0.d0
+      end if     
+     
+      !allow foliage change when lower target of seedproduction is reached, 
+      !including costs for seed production
+      if(seedpool .gt. o_target) then
+ 
+        posma(:)     = MAXLOC(asst_d(:))
+        jmax25t_d(2) = jmax25t_d(posma(1))
+        asst_d(:)    = 0.d0
+        netcg_d(1,:) = assg_d(1,:) - 3600.d0 * 24.d0 * (cpccg_d(1) + rrg_d + tcg_d(1) + seeds_costs)
+        netcg_d(2,:) = assg_d(2,:) - 3600.d0 * 24.d0 * (cpccg_d(2) + rrg_d + tcg_d(2) + seeds_costs )
+        netcg_d(3,:) = assg_d(3,:) - 3600.d0 * 24.d0 * (cpccg_d(3) + rrg_d + tcg_d(3) + seeds_costs)
+        posmna(:)    = MAXLOC(netcg_d(:,:))
+        pcg_d(2)     = MIN(1.d0 - o_pct, pcg_d(posmna(1)))
+        jmax25g_d(2) = jmax25g_d(posmna(2))
+        assg_d(:,:)  = 0.d0
+
+      end if
+
+      !all plants matured, no more seed production, all grasses senesce
+      if(seedpool .gt. o_target2) then
+ 
+        posma(:)     = MAXLOC(asst_d(:))
+        jmax25t_d(2) = jmax25t_d(posma(1))
+        asst_d(:)    = 0.d0
+        netcg_d(1,:) = assg_d(1,:) - 3600.d0 * 24.d0 * (cpccg_d(1) + rrg_d + tcg_d(1))
+        netcg_d(2,:) = assg_d(2,:) - 3600.d0 * 24.d0 * (cpccg_d(2) + rrg_d + tcg_d(2))
+        netcg_d(3,:) = assg_d(3,:) - 3600.d0 * 24.d0 * (cpccg_d(3) + rrg_d + tcg_d(3))
+        posmna(:)    = MAXLOC(netcg_d(:,:))
+        pcg_d(2)     = MIN(1.d0 - o_pct, pcg_d(posmna(1)))
+        jmax25g_d(2) = jmax25g_d(posmna(2))
+        assg_d(:,:)  = 0.d0
+
+      end if
+
+
+
+
+
 
       return
       end subroutine vom_adapt_foliage
