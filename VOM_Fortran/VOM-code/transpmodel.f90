@@ -2010,6 +2010,35 @@
 
       REAL*8  :: netcg_d(3,3)           ! Daily grass net carbon profit
       INTEGER :: posma(1)               ! Pointer to variable values that achieved maximum assimilation
+      REAL*8  :: pcg__
+
+        posma(:)     = MAXLOC(asst_d(:))
+        jmax25t_d(2) = jmax25t_d(posma(1))
+        asst_d(:)    = 0.d0
+        netcg_d(1,:) = assg_d(1,:) - 3600.d0 * 24.d0 * (cpccg_d(1) + rrg_d + tcg_d(1))
+        netcg_d(2,:) = assg_d(2,:) - 3600.d0 * 24.d0 * (cpccg_d(2) + rrg_d + tcg_d(2))
+        netcg_d(3,:) = assg_d(3,:) - 3600.d0 * 24.d0 * (cpccg_d(3) + rrg_d + tcg_d(3))
+        posmna(:)    = MAXLOC(netcg_d(:,:))
+        pcg__        = pcg_d(2) !save old value
+        pcg_d(2)     = MIN(1.d0 - o_pct, pcg_d(posmna(1))) !new value for pcg_d(2)
+        jmax25g_d(2) = jmax25g_d(posmna(2))
+        assg_d(:,:)  = 0.d0
+
+        diff_pcg(nday) = pcg_d(2) - pcg__
+
+        !determine phase of vegetation based on projective cover grasses
+        if( all(diff_pcg( nday-7:nday ) .gt. 0.d0)  ) then
+           phase = 1 !vegetative phase
+        end if
+
+        if( all(diff_pcg( nday-7:nday ) .lt. 0.d0)  ) then
+           phase = 3 !maturati, decaying phase
+        end if
+
+        if( all(diff_pcg( nday-7:nday ) .lt. 0.d0)  ) then
+           phase = 3 !maturity, decaying phase
+        end if
+
 
 
       !only change in foliage when grasses are in not reproductive phase
