@@ -186,7 +186,7 @@
       REAL*8  :: wsold                  ! Previous total soil water storage
 
       REAL*8  :: o_cai                  ! Projected cover perennial vegetation (0-1)
-      REAL*8  :: pcg_d(3)               ! Projected cover seasonal vegetation (pcg_d(2) is actual value)
+      REAL*8  :: cai_gd(3)              ! Projected cover seasonal vegetation (cai_gd(2) is actual value)
       REAL*8  :: c_pcgmin               ! Minimum grass pc; initial point for growth
 
 !     * leaf
@@ -226,6 +226,9 @@
 
       REAL*8  :: lai_lt(3)              ! Local leaf area index trees
       REAL*8  :: lai_lg(3)              ! Local leaf area index grasses
+
+      REAL*8  :: Ma_lt(3)              ! fraction of absorbed radiation trees
+      REAL*8  :: Ma_lg(3)              ! fraction of absorbed radiation grasses
 
 !     * plant water
 
@@ -360,11 +363,11 @@
 
       !$OMP threadprivate( time, error, finish, nyear, nday, nhour, th_, c_testday,   & 
       !$OMP topt_, par_y, srad_y,   &
-      !$OMP vd_d, vd_y, rain_y, gammastar, wsnew, wsold, o_cai, pcg_d, c_pcgmin, &
+      !$OMP vd_d, vd_y, rain_y, gammastar, wsnew, wsold, o_cai, cai_gd, c_pcgmin, &
       !$OMP o_wstexp, o_wsgexp, o_lambdatf, o_lambdagf, lambdat_d, lambdag_d, gstomt, gstomg, &
       !$OMP rlt_h, rlt_d, rlt_y, rlg_h, rlg_d, rlg_y, transpt, transpg, q_tct_d, tct_y, tcg_d, &
-      !$OMP tcg_y, jactt, jactg, jmaxt_h, jmaxg_h, jmax25t_d, jmax25g_d, &
-      !$OMP asst_h, asst_d, asst_y, assg_h, assg_d, assg_y, &
+      !$OMP tcg_y, jactt, jactg, jmaxt_h, jmaxg_h, jmax25t_d, jmax25g_d, lai_lt, lai_lg,&
+      !$OMP Ma_lt, Ma_lg, asst_h, asst_d, asst_y, assg_h, assg_d, assg_y, &
       !$OMP q_cpcct_d, cpcct_y, cpccg_d, cpccg_y, etmt__, etmt_h, etmt_d, etmt_y, etmg__, etmg_h, &
       !$OMP etmg_d, etmg_y, etm_y, mqt_, mqtnew, mqtold, dmqt, q_mqx, mqsst_, mqsstmin, q_md, &
       !$OMP o_mdstore, o_rtdepth, o_rgdepth, pos_slt, pos_slg, pos_ult, pos_ulg, changef, &
