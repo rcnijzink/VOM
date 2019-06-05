@@ -434,6 +434,7 @@
      &                    i_rrootm, i_rsurfmin, i_rsurf_, i_rootrad,   &
      &                    i_prootmg, i_growthmax, i_incrcovg,          &
      &                    i_incrjmax, i_incrlait, i_incrlaig,          &
+     &                    i_minlait, i_minlaig, i_inilait, i_inilaig,  &
      &                    i_extcoeffg, i_extcoefft,                    &
      &                    i_firstyear,i_lastyear, i_write_h, i_read_pc,&
      &                    i_lai_function,                              &
@@ -985,8 +986,8 @@
       mqtnew = 0.95d0 * q_mqx                  ! initial wood water storage
       mqtold = mqtnew
       rsurftnew(:) = 0.d0
-      lai_lt(:) = 2.5d0 * (/1.0d0-i_incrlait,1.0d0,1.0d0+i_incrlait/)
-      lai_lg(:) = 2.5d0 * (/1.0d0-i_incrlaig,1.0d0,1.0d0+i_incrlaig/)
+      lai_lt(:) = i_inilait * (/1.0d0-i_incrlait,1.0d0,1.0d0+i_incrlait/)
+      lai_lg(:) = i_inilaig * (/1.0d0-i_incrlaig,1.0d0,1.0d0+i_incrlaig/)
 
       select case(i_lai_function)
       case(1)
@@ -1115,11 +1116,11 @@
 
 !     * adjust lai-values trees
       lai_lt(:) = lai_lt(2) * (/1.0d0-i_incrlait,1.0d0,1.0d0+i_incrlait/)
-      lai_lt(:) = MAX( lai_lt(:), 0.1d0 ) !minimum value, else lai doesn't pick up anymore
+      lai_lt(:) = MAX( lai_lt(:), i_minlait ) !minimum value, else lai doesn't pick up anymore
 
 !     * adjust lai-values grasses
       lai_lg(:) = lai_lg(2) * (/1.0d0-i_incrlaig,1.0d0,1.0d0+i_incrlaig/) 
-      lai_lg(:) = MAX( lai_lg(:), 0.1d0 ) !minimum value, else lai doesn't pick up anymore
+      lai_lg(:) = MAX( lai_lg(:), i_minlaig ) !minimum value, else lai doesn't pick up anymore
 
       select case(i_lai_function)
       case(1)

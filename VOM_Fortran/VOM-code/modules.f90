@@ -344,6 +344,10 @@
       REAL*8  :: i_incrjmax             ! parameter determining maximum increment percentage of jmax25
       REAL*8  :: i_incrlait             ! parameter determining maximum increment percentage of lai trees
       REAL*8  :: i_incrlaig             ! parameter determining maximum increment percentage of lai grasses
+      REAL*8  :: i_minlait              ! parameter determining minumum lai trees
+      REAL*8  :: i_minlaig              ! parameter determining minimum lai grasses
+      REAL*8  :: i_inilait              ! parameter determining initial lai trees
+      REAL*8  :: i_inilaig              ! parameter determining initial lai grasses
       REAL*8  :: i_extcoeffg            ! extinction coefficient beer's law grasses
       REAL*8  :: i_extcoefft            ! extinction coefficient beer's law trees
 
