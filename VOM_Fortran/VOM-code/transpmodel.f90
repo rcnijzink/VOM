@@ -1043,7 +1043,7 @@
       else       
          cai_gd(2)     = MIN(1.d0 - o_cai, c_pcgmin)
          cai_gd(:)     = cai_gd(2) * (/1.0d0-i_incrcovg,1.0d0,1.0d0+i_incrcovg/)  ! perc. change grass cover
-         cai_gd(3)     = MIN(MAX(c_pcgmin, cai_gd(3)), 1.d0 - o_cai)
+         cai_gd(:)     = MIN(cai_gd(:), 1.d0 - o_cai)
       end if
 
       rootlim(:,:,:) = 0.d0
@@ -1143,8 +1143,8 @@
 
       else
          cai_gd(:)     = cai_gd(2) * (/1.0d0-i_incrcovg,1.0d0,1.0d0+i_incrcovg/)  ! perc. change grass cover
-         cai_gd(:)     = MAX(cai_gd(:), 0.d0)
-         cai_gd(3)     = MIN(MAX(c_pcgmin, cai_gd(3)), 1.d0 - o_cai)
+         cai_gd(:)     = MAX(cai_gd(:), c_pcgmin)
+         cai_gd(:)     = MIN(cai_gd(:), 1.d0 - o_cai)
       end if
 
 
