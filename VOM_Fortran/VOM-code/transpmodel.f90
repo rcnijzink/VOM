@@ -432,7 +432,7 @@
      &                    i_testyear, i_ha, i_hd, i_toptf,             &
      &                    i_toptstart, i_rlratio, i_mdtf, i_mqxtf,     &
      &                    i_rrootm, i_rsurfmin, i_rsurf_, i_rootrad,   &
-     &                    i_prootmg, i_growthmax, i_incrcovg,          &
+     &                    i_prootmg, i_growthmax, i_incrcovg, c_pcgmin,&
      &                    i_incrjmax, i_incrlait, i_incrlaig,          &
      &                    i_minlait, i_minlaig, i_inilait, i_inilaig,  &
      &                    i_extcoeffg, i_extcoefft,                    &
@@ -1031,7 +1031,7 @@
       endif
       jmax25t_d(2) = 0.0003d0
       jmax25g_d(2) = 0.0003d0
-      c_pcgmin     = 0.02d0             ! minimum grass pc; initial point for growth
+      !c_pcgmin     = 0.02d0             ! minimum grass pc; initial point for growth
 
       if(i_read_pc == 1) then
          cai_gd(:) = perc_cov_veg( 1 )
