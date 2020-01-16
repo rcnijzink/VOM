@@ -8,11 +8,11 @@
 #Adjustments:  
 
 #The name of the exetuble (the final program)
-PROGRAM  = model.x
+#PROGRAM  = model.x
+PROGRAM  = model_x86_64
 
-
-FC      := /usr/bin/gfortran #compiler name and directory
-#FC      := /usr/bin/x86_64-w64-mingw32-gfortran #64bit
+#FC      := /usr/bin/gfortran #compiler name and directory
+FC      := /usr/bin/x86_64-w64-mingw32-gcc #64bit
 
 
 SRC_PATH = ./src		#path of source files
