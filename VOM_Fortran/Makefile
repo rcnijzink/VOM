@@ -12,13 +12,12 @@
 PROGRAM  = model_x86_64
 
 #FC      := /usr/bin/gfortran #compiler name and directory
-FC      := /usr/bin/x86_64-w64-mingw32-gcc #64bit
+FC      := /usr/bin/x86_64-w64-mingw32-gfortran #64bit
 
 
 SRC_PATH = ./src		#path of source files
 OBJ_PATH = ./tmp		#path .o and .mod files
 
-NFDIR := lib/
 
 SRC_PATH    := $(abspath $(SRC_PATH:~%=${HOME}%))
 OBJ_PATH   := $(abspath $(OBJ_PATH:~%=${HOME}%))
@@ -30,6 +29,7 @@ FCFLAGS =
 FLFLAGS =
 
 NC_INCLUDE=/usr/include
+NF_LIB=/usr/lib
 
 #source objects
 SRC = VOM-code/modules.f90 VOM-code/readdata.f90 VOM-code/writedata.f90 VOM-code/coreprog.f90 VOM-code/sample.f90 VOM-code/sce.f90 VOM-code/transpmodel.f90 VOM-code/watbal.f90 
@@ -43,7 +43,7 @@ MSRC = *.mod
 all: $(PROGRAM) 
 		
 $(PROGRAM): $(SRC) 
-	$(FC) -fopenmp -o $@ $^ -static-libgfortran -I${NC_INCLUDE} -lnetcdff; rm $(MSRC)    #;mv $(MSRC) $(OBJ_PATH)
+	$(FC) -fopenmp -o $@ $^ -static-libgfortran -I${NC_INCLUDE} -L${NF_LIB} -lnetcdff -lnetcdf; rm $(MSRC)    #;mv $(MSRC) $(OBJ_PATH)
 #	$(FC) -o $@ $^ -I${NFDIR}/include -L${NFDIR}/lib  -static ;mv $(MSRC) $(OBJ_PATH)
 %.o: %.f
 	$(FC) -o $@ $<
