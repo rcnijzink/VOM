@@ -1250,7 +1250,7 @@
 
 !     * (3.24), (Out[312]), leaf respiration trees
      do ii = 1,3 !loop for LAI-values
-      rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cai * Ma_lt(ii) * jmaxt_h(:)         &
+      rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cai * lai_lt(ii) * jmaxt_h(:)         &
      &         * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar)   &
      &         * (1.d0 + i_rlratio))
      end do
@@ -1275,13 +1275,13 @@
 
 !    * respiration grasses
      do ii = 1,3 !loop for LAI-values
-         rlg_h(1,:,ii) = ((ca_h(th_) - gammastar) * pcg_d(1) * Ma_lg(ii) * jmaxg_h(:)    &
+         rlg_h(1,:,ii) = ((ca_h(th_) - gammastar) * pcg_d(1) * lai_lg(ii) * jmaxg_h(:)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-         rlg_h(2,:,ii) = ((ca_h(th_) - gammastar) * pcg_d(2) * Ma_lg(ii) * jmaxg_h(:)    &
+         rlg_h(2,:,ii) = ((ca_h(th_) - gammastar) * pcg_d(2) * lai_lg(ii) * jmaxg_h(:)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-         rlg_h(3,:,ii) = ((ca_h(th_) - gammastar) * pcg_d(3) * Ma_lg(ii) * jmaxg_h(:)    &
+         rlg_h(3,:,ii) = ((ca_h(th_) - gammastar) * pcg_d(3) * lai_lg(ii) * jmaxg_h(:)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
      end do
@@ -1350,7 +1350,7 @@
 !       * calculate electron transport capacity trees
         do ii = 1,3
            jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &    
-        &             / jmaxt_h(:))) * jmaxt_h(:) * o_cai * Ma_lt(ii)  ! (3.23), (Out[311])
+        &             / jmaxt_h(:))) * jmaxt_h(:) * o_cai * Ma_lt(ii) * lai_lt(ii) ! (3.23), (Out[311])
         end do
 
       select case(i_lai_function)
@@ -1365,11 +1365,11 @@
 !       * calculate electron transport capacity grasses
         do ii = 1,3
            jactg(1,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(1) * Ma_lg(ii)  ! (3.23), (Out[311])
+     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(1) * Ma_lg(ii) * lai_lg(ii)  ! (3.23), (Out[311])
            jactg(2,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(2) * Ma_lg(ii)  ! (3.23), (Out[311])
+     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(2) * Ma_lg(ii) * lai_lg(ii) ! (3.23), (Out[311])
            jactg(3,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(3) * Ma_lg(ii)  ! (3.23), (Out[311])
+     &             / jmaxg_h(:))) * jmaxg_h(:) * pcg_d(3) * Ma_lg(ii) * lai_lg(ii) ! (3.23), (Out[311])
         end do
 
         cond1      = (2.d0 * p_a * vd_h(th_)) / (ca_h(th_) + 2.d0 * gammastar)
