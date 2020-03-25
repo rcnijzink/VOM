@@ -196,6 +196,21 @@
       REAL*8,  INTENT(inout) :: tp_netassg
       REAL*8,  INTENT(inout) :: tp_netasst
       INTEGER, INTENT(in)    :: option1
+      REAL*8 :: Ma_lg
+      REAL*8 :: Ma_lt
+
+
+      select case(i_lai_function)
+      case(1)
+        Ma_lg = 1.0d0
+        Ma_lt = 1.0d0
+      case(2)
+!       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
+        Ma_lg = 1.0d0 - p_E ** (-lai_lg(2) * i_extcoeffg)
+        Ma_lt = 1.0d0 - p_E ** (-lai_lt(2) * i_extcoeffg)
+      end select
+
+
       !REAL*8, DIMENSION(21, c_maxday ), INTENT(inout) :: output_mat
 
       !if (optmode .eq. 0) then
