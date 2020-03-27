@@ -557,7 +557,7 @@
          &  'lambdat', 'lambdag', 'rrt', 'rrg', 'asst', 'assg', 'su_avg',  &
          &  'zw', 'ws', 'spgfcf', 'infx', 'etmt', 'etmg', 'su_1', 'topt',  &
          &  'tcg', 'tct', 'cpccg_d', 'cpcct_d',  'lai_t', 'lai_g', &
-         &'ncp_g', 'ncp_t'
+         &  'ncp_g', 'ncp_t'
 
         open(kfile_rsurfdaily, FILE=trim(adjustl(i_outputpath))// &
              trim(adjustl(sfile_rsurfdaily)), STATUS='replace')
@@ -567,11 +567,11 @@
 
       open(kfile_resultshourly, FILE=trim(adjustl(i_outputpath))//      &
            trim(adjustl(sfile_resultshourly)), STATUS='replace')
-      write(kfile_resultshourly,'(A6,A7,A7,A7,A7,22A15)') 'fyear',     &
+      write(kfile_resultshourly,'(A6,A7,A7,A7,A7,26A15)') 'fyear',     &
      &  'fmonth', 'fday', 'nday', 'nhour', 'rain', 'tair', 'par', 'vd',&
      &  'esoil', 'pc', 'jmax25t', 'jmax25g', 'mqt', 'rl', 'lambdat',   &
      &  'lambdag', 'rr', 'asst', 'assg', 'etmt', 'etmg', 'su_1',       &
-     &  'zw', 'ws', 'spgfcf', 'infx'
+     &  'zw', 'ws', 'spgfcf', 'infx', 'jactg', 'jactt', 'gstomg', 'gstomt'
 
 
 
@@ -615,8 +615,8 @@
              &  assg, su_avg, zw, ws,     &
              &  spgfcf, infx, etmt, etmg, su_1, topt,              &
              & tcg, tct, cpccg, cpcct,                  &
-             & lai_t, lai_g, tp_netassg, tp_netasst, rsurft, nc_flag )
-
+             & lai_t, lai_g, &
+             & tp_netassg, tp_netasst, rsurft, nc_flag )
 
       use vom_vegwat_mod
       use netcdf
@@ -840,7 +840,7 @@
           &    pc_hourly, jmax25t_hourly, jmax25g_hourly, mqt_hourly,          &
           &    rl_hourly, lambdat_hourly, lambdag_hourly, rr_hourly,  &
           &    asst_hourly, assg_hourly, etmt_hourly, etmg_hourly, su1_hourly, zw_hourly, ws_hourly, &
-          &    spgfcf_hourly, infx_hourly, ruptkt_hourly, su_hourly, nc_flag )
+          &    spgfcf_hourly, infx_hourly, ruptkt_hourly, su_hourly, jact_g, jact_t, gstom_g, gstom_t, nc_flag )
       use vom_vegwat_mod
       use netcdf
       implicit none
@@ -874,6 +874,10 @@
       REAL*8,  INTENT(in) :: ws_hourly
       REAL*8,  INTENT(in) :: spgfcf_hourly
       REAL*8,  INTENT(in) :: infx_hourly
+      REAL*8,  INTENT(in) :: jact_g
+      REAL*8,  INTENT(in) :: jact_t
+      REAL*8,  INTENT(in) :: gstom_g
+      REAL*8,  INTENT(in) :: gstom_t
       REAL*8,  DIMENSION(s_maxlayer), INTENT(in):: ruptkt_hourly
       REAL*8,  DIMENSION(s_maxlayer), INTENT(in):: su_hourly
       LOGICAL, INTENT(in) :: nc_flag
@@ -976,13 +980,13 @@
 !         * includes a column for each sublayer
           hourlyformat = '(I6,I6,I4,I7,I5,'//str//'E14.6)'
 
-          write(kfile_resultshourly,'(I6,I7,I7,I7,I7,22E15.5)')          &
+          write(kfile_resultshourly,'(I6,I7,I7,I7,I7,26E15.5)')          &
           &    year, month, day, num_day, num_hour,          &
           &    rain_hourly, tair_hourly, par_hourly, vd_hourly, esoil_hourly,    &
           &    pc_hourly, jmax25t_hourly, jmax25g_hourly, mqt_hourly,          &
           &    rl_hourly, lambdat_hourly, lambdag_hourly, rr_hourly,  &
           &    asst_hourly, assg_hourly, etmt_hourly, etmg_hourly, su1_hourly, zw_hourly, ws_hourly, &
-          &    spgfcf_hourly, infx_hourly
+          &    spgfcf_hourly, infx_hourly, jact_g, jact_t, gstom_g, gstom_t
 
           write(kfile_delzhourly,hourlyformat) fyear(nday),            &
           &      fmonth(nday), fday(nday), nday, nhour, s_delz(1:wlayer_)

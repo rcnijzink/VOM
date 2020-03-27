@@ -138,7 +138,8 @@
              &    o_cai + caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
              &    rlt_h(2,2) + rlg_h(2,2,2), lambdat_d, lambdag_d, rrt_d + rrg_d,  &
              &    asst_h(2,2), assg_h(2,2,2), etmt_h, etmg_h, su__(1), zw_, wsnew, &
-             &    spgfcf_h, infx_h, ruptkt_h, su__, i_write_nc)
+             &    spgfcf_h, infx_h, ruptkt_h, su__,jactg(2,2,2), jactt(2,2), gstomg(2,2,2), &
+             &    gstomt, i_write_nc)
 
 !       * check water balance
 
@@ -206,8 +207,8 @@
         Ma_lt = 1.0d0
       case(2)
 !       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
-        Ma_lg = 1.0d0 - p_E ** (-lai_lg(2) * i_extcoeffg)
-        Ma_lt = 1.0d0 - p_E ** (-lai_lt(2) * i_extcoeffg)
+        Ma_lg = p_E ** (-lai_lg(2) * i_extcoeffg)
+        Ma_lt = p_E ** (-lai_lt(2) * i_extcoeffg)
       end select
 
 
@@ -224,7 +225,7 @@
              &  assg_d(2,2,2), SUM(su__(1:wlayer_)) / wlayer_, zw_, wsnew,     &
              &  spgfcf_d, infx_d, etmt_d, etmg_d, su__(1), topt_,              &
              & tcg_d(2,2), q_tct_d(2), cpccg_d(2), q_cpcct_d,                  &
-             & lai_lt(2), lai_lg(2), tp_netassg, tp_netasst, rsurft_, i_write_nc )             
+             & lai_lt(2), lai_lg(2), tp_netassg, tp_netasst, rsurft_, i_write_nc )   
 
        if (fyear(nday) .ne. nyear) then
 !       * for calculation of vd_y a -1 is added to nday for using dayyear of correct year
@@ -1267,7 +1268,7 @@
 
       case(2)
 !       * fraction of absorbed radiation per crown area (Beer-lambert)
-        Ma_lt(:) = 1.0d0 - p_E ** (-lai_lt(:) * i_extcoefft )
+        Ma_lt(:) = p_E ** (-lai_lt(:) * i_extcoefft )
 
 !       * (3.24), (Out[312]), leaf respiration trees
         do ii = 1,3 !loop for LAI-values
@@ -1309,7 +1310,7 @@
 
       case(2)
 !       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
-        Ma_lg(:) = 1.0d0 - p_E ** (-lai_lg(:) * i_extcoeffg)
+        Ma_lg(:) = p_E ** (-lai_lg(:) * i_extcoeffg)
 
 !       * respiration grasses
         do ii = 1,3 !loop for LAI-values
@@ -1405,9 +1406,9 @@
 
       case(2)
 !       * fraction of absorbed radiation per crown area (Beer-lambert)
-        Ma_lt(:) = 1.0d0 - p_E ** (-lai_lt(:) * i_extcoefft )
+        Ma_lt(:) = p_E ** (-lai_lt(:) * i_extcoefft )
 !       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
-        Ma_lg(:) = 1.0d0 - p_E ** (-lai_lg(:) * i_extcoeffg)
+        Ma_lg(:) = p_E ** (-lai_lg(:) * i_extcoeffg)
 
 !       * calculate electron transport capacity trees
         do ii = 1,3
