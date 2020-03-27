@@ -135,7 +135,7 @@
         call vom_add_daily()
         call vom_write_hourly(fyear(nday), fmonth(nday), fday(nday), nday, nhour, th_,          &
              &    rain_h(th_), tair_h(th_), par_h(th_), vd_h(th_), esoil_h,    &
-             &    o_cai + caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
+             &    o_cait + caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
              &    rlt_h(2,2) + rlg_h(2,2,2), lambdat_d, lambdag_d, rrt_d + rrg_d,  &
              &    asst_h(2,2), assg_h(2,2,2), etmt_h, etmg_h, su__(1), zw_, wsnew, &
              &    spgfcf_h, infx_h, ruptkt_h, su__,jactg(2,2,2), jactt(2,2), gstomg(2,2,2), &
@@ -220,7 +220,7 @@
 
         call vom_write_day( rain_d(nday), tairmax_d(nday), tairmin_d(nday), par_d(nday),   &
              &  vd_d / 24.d0, esoil_d, jmax25t_d(2), jmax25g_d(2),             &
-             &  o_cai*Ma_lt + caig_d(2)*Ma_lg, rlt_d , rlg_d, lambdat_d, lambdag_d,         &
+             &  o_cait*Ma_lt + caig_d(2)*Ma_lg, rlt_d , rlg_d, lambdat_d, lambdag_d,         &
              &  rrt_d * 3600.d0 * 24.d0, rrg_d * 3600.d0 * 24.d0, asst_d(2,2), &
              &  assg_d(2,2,2), SUM(su__(1:wlayer_)) / wlayer_, zw_, wsnew,     &
              &  spgfcf_d, infx_d, etmt_d, etmg_d, su__(1), topt_,              &
@@ -442,7 +442,7 @@
       if (vom_npar .ge. 2) o_wsgexp   = vom_invar(2)
       if (vom_npar .ge. 3) o_lambdatf = vom_invar(3)
       if (vom_npar .ge. 4) o_wstexp   = vom_invar(4)
-      if (vom_npar .ge. 5) o_cai      = vom_invar(5)
+      if (vom_npar .ge. 5) o_cait      = vom_invar(5)
       if (vom_npar .ge. 6) o_rtdepth  = vom_invar(6)
       if (vom_npar .ge. 7) o_mdstore  = vom_invar(7)
       if (vom_npar .ge. 8) o_rgdepth  = vom_invar(8)
@@ -461,7 +461,7 @@
          o_wsgexp   = 0.0
          o_lambdatf = 0.0 
          o_wstexp   = 0.0
-         o_cai      = 0.0
+         o_cait      = 0.0
          o_rtdepth  = 0.0
          o_mdstore  = 0.0
          o_rgdepth  = 0.0
@@ -520,7 +520,7 @@
      &                    i_lai_function,  i_no_veg,                   &
      &                    i_inputpath, i_outputpath,                   &
      &                    o_lambdagf, o_wsgexp, o_lambdatf, o_wstexp,  &
-     &                    o_cai, o_rtdepth, o_mdstore, o_rgdepth
+     &                    o_cait, o_rtdepth, o_mdstore, o_rgdepth
 
       namelist /input2par/ i_lat, i_lon, i_cz, i_cgs, i_zr, i_go, i_ksat,     &
      &                     i_thetar, i_thetas, i_nvg, i_avg, i_delz
@@ -1021,7 +1021,7 @@
 
 !     * Set vegetation parameters
 
-      q_md   = o_cai * i_mdtf + o_mdstore
+      q_md   = o_cait * i_mdtf + o_mdstore
       q_mqx  = q_md * i_mqxtf
       mqtnew = 0.95d0 * q_mqx                  ! initial wood water storage
       mqtold = mqtnew
@@ -1073,14 +1073,14 @@
       if(i_read_pc == 1) then
          caig_d(:) = perc_cov_veg( 1 )
          !adjust value if perennial + seasonal > 1
-         if( (caig_d(1) + o_cai) .gt. 1.0) then
-            caig_d(:) = 1.d0 - o_cai
+         if( (caig_d(1) + o_cait) .gt. 1.0) then
+            caig_d(:) = 1.d0 - o_cait
          end if
 
       else       
-         caig_d(2)     = MIN(1.d0 - o_cai, c_caigmin)
+         caig_d(2)     = MIN(1.d0 - o_cait, c_caigmin)
          caig_d(:)     = caig_d(2) + (/-i_incrcovg,0.0d0,i_incrcovg/)  ! vector with values varying by 1%
-         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), 1.d0 - o_cai)
+         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), 1.d0 - o_cait)
       end if
 
       rootlim(:,:,:) = 0.d0
@@ -1090,11 +1090,11 @@
       select case(i_lai_function)
       case(1)
 !        * (3.38)  foliage turnover costs, assuming crown LAI of 2.5
-         q_tct_d(:) = i_tcf * o_cai * 2.5d0
+         q_tct_d(:) = i_tcf * o_cait * 2.5d0
 
       case(2)
 !        * foliage turnover costs, LAI as a function of cover (Choudhurry,1987; Monsi and Saeki,1953)
-         q_tct_d(:) = i_tcf * o_cai * lai_lt(:)
+         q_tct_d(:) = i_tcf * o_cait * lai_lt(:)
       end select
 
 !     * Setting yearly, daily and hourly parameters
@@ -1163,14 +1163,14 @@
          caig_d(:) = perc_cov_veg(nday)  
 
          !adjust value if perennial + seasonal > 1
-         if( (caig_d(1) + o_cai) .gt. 1.0) then
-            caig_d(:) = 1.d0 - o_cai
+         if( (caig_d(1) + o_cait) .gt. 1.0) then
+            caig_d(:) = 1.d0 - o_cait
          end if
 
       else
          caig_d(:)     = caig_d(2) + (/-i_incrcovg,0.0d0,i_incrcovg/)  ! perc. change grass cover
          caig_d(:)     = MAX(caig_d(:), 0.d0)
-         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), 1.d0 - o_cai)
+         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), 1.d0 - o_cait)
       end if
 
 
@@ -1181,13 +1181,13 @@
          do ii = 1,3
             tcg_d(ii,:)     = i_tcf * caig_d(:) * 2.5d0 !grasses
          end do
-         q_tct_d(:)     = i_tcf * o_cai * 2.5d0    !trees
+         q_tct_d(:)     = i_tcf * o_cait * 2.5d0    !trees
       case(2)
 !        * foliage turnover costs, varying lai
          do ii = 1,3
             tcg_d(ii, :) = i_tcf * caig_d(:) * lai_lg(ii) !grasses 
          end do
-         q_tct_d(:) = i_tcf * o_cai * lai_lt(:)     !trees
+         q_tct_d(:) = i_tcf * o_cait * lai_lt(:)     !trees
       end select
 
 
@@ -1196,7 +1196,7 @@
 
 
 !     * (3.42, 2.45e-10 from (Out[165])) costs of water distribution and storage
-      q_cpcct_d = i_cpccf * o_cai * o_rtdepth + o_mdstore * 2.45d-10
+      q_cpcct_d = i_cpccf * o_cait * o_rtdepth + o_mdstore * 2.45d-10
       cpccg_d(:) = i_cpccf * caig_d(:) * o_rgdepth  ! (3.42) water transport costs
 
 
@@ -1238,8 +1238,8 @@
       implicit none
 
       INTEGER :: ii           !counter
-      REAL*8 :: Ma_lg(3)      !fraction of absorbed radiation grasses
-      REAL*8 :: Ma_lt(3)      !fraction of absorbed radiation trees
+      REAL*8 :: Ma_lg(3)      !local fraction of absorbed radiation grasses
+      REAL*8 :: Ma_lt(3)      !local fraction of absorbed radiation trees
 
 !     * (Out[274], derived from (3.25))
       gammastar = 0.00004275d0                                         &
@@ -1261,7 +1261,7 @@
         Ma_lt(:) = 1.0d0
 !       * (3.24), (Out[312]), leaf respiration trees
         do ii = 1,3 !loop for LAI-values
-          rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cai * jmaxt_h(:)         &
+          rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cait * jmaxt_h(:)         &
           &         * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar)   &
           &         * (1.d0 + i_rlratio))
          end do
@@ -1272,7 +1272,7 @@
 
 !       * (3.24), (Out[312]), leaf respiration trees
         do ii = 1,3 !loop for LAI-values
-           rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cai * jmaxt_h(:)         &
+           rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cait * jmaxt_h(:)         &
         &         * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar)   &
         &         * (1.d0 + i_rlratio))
         end do
@@ -1373,9 +1373,8 @@
       REAL*8 :: part1, part2, part3, part4, part5
       REAL*8 :: part6, part7, part8, part9
       INTEGER:: ii
-      REAL*8 :: Ma_lg(3)
-      REAL*8 :: Ma_lt(3)
-
+      REAL*8 :: Ma_lg(3)      !local fraction of absorbed radiation grasses
+      REAL*8 :: Ma_lt(3)      !local fraction of absorbed radiation trees
 
       if (par_h(th_) .gt. 0.d0) then
 !       * adaptation of topt to air temperature during sunlight
@@ -1391,7 +1390,7 @@
 !       * calculate electron transport capacity trees
         do ii = 1,3
            jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &    
-        &             / jmaxt_h(:))) * jmaxt_h(:) * o_cai * Ma_lt(ii) ! (3.23), (Out[311])
+        &             / jmaxt_h(:))) * jmaxt_h(:) * o_cait * Ma_lt(ii) ! (3.23), (Out[311])
         end do
 
 !       * calculate electron transport capacity grasses
@@ -1413,7 +1412,7 @@
 !       * calculate electron transport capacity trees
         do ii = 1,3
            jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &    
-        &             / jmaxt_h(:))) * jmaxt_h(:) * o_cai * Ma_lt(ii)  ! (3.23), (Out[311])
+        &             / jmaxt_h(:))) * jmaxt_h(:) * o_cait * Ma_lt(ii)  ! (3.23), (Out[311])
         end do
 
 
@@ -1839,7 +1838,7 @@
         write(kfile_resultshourly,'(I6,I7,I7,I7,I7,22E15.5)')          &
      &    fyear(nday), fmonth(nday), fday(nday), nday, nhour,          &
      &    rain_h(th_), tair_h(th_), par_h(th_), vd_h(th_), esoil_h,    &
-     &    o_cai + caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
+     &    o_cait + caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
      &    rlt_h(2,2) + rlg_h(2,2,2), lambdat_d, lambdag_d, rrt_d + rrg_d,  &
      &    asst_h(2,2), assg_h(2,2,2), etmt_h, etmg_h, su__(1), zw_, wsnew, &
      &    spgfcf_h, infx_h
@@ -1935,7 +1934,7 @@
        output_mat(4, nday) = jmax25g_d(2)
 
        ! Projected cover perennial vegetation plus actual cover seasonal vegetation 
-       output_mat(5, nday) = o_cai + caig_d(2)
+       output_mat(5, nday) = o_cait + caig_d(2)
 
        ! Daily tree plus grass leaf respiration
        output_mat(6, nday) = rlt_d + rlg_d
@@ -2169,7 +2168,7 @@
          !check if carbon profit is higher for different LAI
          if( max_netcg_tmp .gt. max_netcg) then
             
-            caig_d_tmp = MIN(1.d0 - o_cai, caig_d(posbest(1))) !cover grasses to temporary variable
+            caig_d_tmp = MIN(1.d0 - o_cait, caig_d(posbest(1))) !cover grasses to temporary variable
             lai_g_tmp = lai_lg(ii)                          !lai grasses in temporary variable
             jmax25g_tmp = jmax25g_d(posbest(2))              !jmax25 grasses in temporary variable
             max_netcg = max_netcg_tmp                       !new NCP is higher as previous
