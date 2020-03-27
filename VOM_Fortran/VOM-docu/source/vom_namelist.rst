@@ -21,6 +21,10 @@ The file "vom_namelist" is an input file for the VOM, containing all settings fo
 +-----------------+----------------------------------------------------------------------------------------------------+-----------+
 | i_toptstart     | start parameter for topt to calculate jmax                                                         | K         |
 +-----------------+----------------------------------------------------------------------------------------------------+-----------+
+| i_jmax25tstart  | Initial parameter for jmax25 perennial vegetation                                                  | mol/m2/s1 |
++-----------------+----------------------------------------------------------------------------------------------------+-----------+
+| i_jmax25gstart  | Initial parameter for jmax25 seasonal vegetation                                                   | mol/m2/s1 |
++-----------------+----------------------------------------------------------------------------------------------------+-----------+
 | i_rlratio       | leaf respiration parameter (rl=rlratio*assmax)                                                     | \-        |
 +-----------------+----------------------------------------------------------------------------------------------------+-----------+
 | i_mdtf          | total dry mass of living tissues of trees per unit pc                                              | g/m^2     |

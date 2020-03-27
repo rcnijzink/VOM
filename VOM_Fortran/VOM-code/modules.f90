@@ -431,6 +431,8 @@
       REAL*8  :: i_hd                   ! Temperature response parameter
       REAL*8  :: i_toptf                ! Parameter to calculate adaptation of topt (range 0-1 for no to full adaptation)
       REAL*8  :: i_toptstart            ! Start parameter for topt to calculate jmax(temp in K)
+      REAL*8  :: i_jmax25tstart         ! Initial parameter for jmax25 perennial vegetation
+      REAL*8  :: i_jmax25gstart         ! Initial parameter for jmax25 seasonal vegetation
       REAL*8  :: i_rlratio              ! Ratio of leaf respiration to photosynthetic capacity
 
 !     * Catchment parameters
