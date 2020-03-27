@@ -510,7 +510,7 @@
 
       namelist /inputpar/ i_alpha, i_cpccf, i_tcf, i_maxyear,          &
      &                    i_testyear, i_ha, i_hd, i_toptf,             &
-     &                    i_toptstart, i_jmax25tstart, i_jmax25gstart  &
+     &                    i_toptstart, i_jmax25tstart, i_jmax25gstart, &
      &                    i_rlratio, i_mdtf, i_mqxtf,                  &
      &                    i_rrootm, i_rsurfmin, i_rsurf_, i_rootrad,   &
      &                    i_prootmg, i_growthmax, i_incrcovg,          &
