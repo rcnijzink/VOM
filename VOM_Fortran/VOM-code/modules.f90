@@ -299,8 +299,8 @@
       REAL*8  :: wsnew                  ! Total soil water store at next time step
       REAL*8  :: wsold                  ! Previous total soil water storage
 
-      REAL*8  :: o_cai                  ! Projected cover perennial vegetation (0-1)
-      REAL*8  :: caig_d(3)               ! Projected cover seasonal vegetation (caig_d(2) is actual value)
+      REAL*8  :: o_cait                  ! Crown area index trees (0-1)
+      REAL*8  :: caig_d(3)               ! Crown area index grasses (caig_d(2) is actual value)
       REAL*8  :: c_caigmin               ! Minimum grass pc; initial point for growth
 
 !     * leaf
@@ -431,6 +431,8 @@
       REAL*8  :: i_hd                   ! Temperature response parameter
       REAL*8  :: i_toptf                ! Parameter to calculate adaptation of topt (range 0-1 for no to full adaptation)
       REAL*8  :: i_toptstart            ! Start parameter for topt to calculate jmax(temp in K)
+      REAL*8  :: i_jmax25tstart         ! Initial parameter for jmax25 perennial vegetation
+      REAL*8  :: i_jmax25gstart         ! Initial parameter for jmax25 seasonal vegetation
       REAL*8  :: i_rlratio              ! Ratio of leaf respiration to photosynthetic capacity
 
 !     * Catchment parameters
@@ -480,7 +482,7 @@
 
       !$OMP threadprivate( time, error, finish, nyear, nday, nhour, th_, c_testday,   & 
       !$OMP topt_, par_y, srad_y,   &
-      !$OMP vd_d, vd_y, rain_y, gammastar, wsnew, wsold, o_cai, caig_d, c_caigmin, &
+      !$OMP vd_d, vd_y, rain_y, gammastar, wsnew, wsold, o_cait, caig_d, c_caigmin, &
       !$OMP o_wstexp, o_wsgexp, o_lambdatf, o_lambdagf, lambdat_d, lambdag_d, gstomt, gstomg, &
       !$OMP rlt_h, rlt_d, rlt_y, rlg_h, rlg_d, rlg_y, transpt, transpg, q_tct_d, tct_y, tcg_d, &
       !$OMP tcg_y, jactt, jactg, jmaxt_h, jmaxg_h, jmax25t_d, jmax25g_d, &
