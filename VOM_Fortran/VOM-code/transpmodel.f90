@@ -145,7 +145,7 @@
         call vom_add_daily()
         call vom_write_hourly(fyear(nday), fmonth(nday), fday(nday), nday, nhour, th_,          &
              &    rain_h(th_), tair_h(th_), par_h(th_), vd_h(th_), esoil_h,    &
-             &    o_cai*Ma_lt + caig_d(2)*Ma_lg, jmax25t_d(2), jmax25g_d(2), mqt_,          &
+             &    o_cait*Ma_lt + caig_d(2)*Ma_lg, jmax25t_d(2), jmax25g_d(2), mqt_,          &
              &    rlt_h(2,2) + rlg_h(2,2,2), lambdat_d, lambdag_d, rrt_d + rrg_d,  &
              &    asst_h(2,2), assg_h(2,2,2), etmt_h, etmg_h, su__(1), zw_, wsnew, &
              &    spgfcf_h, infx_h, ruptkt_h, su__,jactg(2,2,2), jactt(2,2), gstomg(2,2,2), &
