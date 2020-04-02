@@ -47,9 +47,13 @@ The file "vom_namelist" is an input file for the VOM, containing all settings fo
 +-----------------+----------------------------------------------------------------------------------------------------+-----------+
 | i_incrjmax      | parameter determining maximum increment percentage of jmax25                                       | \-        |
 +-----------------+----------------------------------------------------------------------------------------------------+-----------+
-| i_incrlait      | parameter determining maximum increment percentage of LAI grasses                                  | \-        |
+| i_inilait       | parameter determining initial value of LAI trees                                                   | \-        |
 +-----------------+----------------------------------------------------------------------------------------------------+-----------+
-| i_incrlaig      | parameter determining maximum increment percentage of LAI trees                                    | \-        |
+| i_inilaig       | parameter determininginitial value  of LAI grasses                                                 | \-        |
++-----------------+----------------------------------------------------------------------------------------------------+-----------+
+| i_incrlait      | parameter determining maximum increment percentage of LAI trees                                    | \-        |
++-----------------+----------------------------------------------------------------------------------------------------+-----------+
+| i_incrlaig      | parameter determining maximum increment percentage of LAI grasses                                  | \-        |
 +-----------------+----------------------------------------------------------------------------------------------------+-----------+
 | i_firstyear     | firstyear for the generation of hourly output in computation mode                                  | \-        |
 +-----------------+----------------------------------------------------------------------------------------------------+-----------+
