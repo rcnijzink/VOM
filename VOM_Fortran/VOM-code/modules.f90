@@ -341,6 +341,9 @@
       REAL*8  :: lai_lt(3)              ! Local leaf area index trees
       REAL*8  :: lai_lg(3)              ! Local leaf area index grasses
 
+      REAL*8  :: Ma_lt(3)               ! local fraction of absorbed radiation trees
+      REAL*8  :: Ma_lg(3)               ! local fraction of absorbed radiation grasses
+
 !     * plant water
 
       REAL*8  :: asst_h(3,3)            ! Tree hourly assimilation rate for different values of Jmax (asst_h(2) is actual value)

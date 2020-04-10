@@ -43,8 +43,7 @@
       REAL*8, DIMENSION(dim_invar), INTENT(in) :: invar
       REAL*8                 :: tp_netasst_d
       REAL*8                 :: tp_netassg_d
-      REAL*8 :: Ma_lg
-      REAL*8 :: Ma_lt
+
 
       tp_netass  = 0.d0
 
@@ -130,22 +129,13 @@
       ruptkg_d(:) = ruptkg_d(:) + ruptkg_h(:)
 
       !if (optmode .eq. 0) then
-      select case(i_lai_function)
-      case(1)
-        Ma_lg = 1.0d0
-        Ma_lt = 1.0d0
-      case(2)
-!       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
-        Ma_lg = 1.d0 - p_E ** (-lai_lg(2) * i_extcoeffg)
-        Ma_lt = 1.d0 - p_E ** (-lai_lt(2) * i_extcoeffg)
-      end select
 
        !formatted output for single model run
        if (option1 .eq. 2) then
         call vom_add_daily()
         call vom_write_hourly(fyear(nday), fmonth(nday), fday(nday), nday, nhour, th_,          &
              &    rain_h(th_), tair_h(th_), par_h(th_), vd_h(th_), esoil_h,    &
-             &    o_cait*Ma_lt + caig_d(2)*Ma_lg, jmax25t_d(2), jmax25g_d(2), mqt_,          &
+             &    o_cait*Ma_lt(2) + caig_d(2)*Ma_lg(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
              &    rlt_h(2,2) + rlg_h(2,2,2), lambdat_d, lambdag_d, rrt_d + rrg_d,  &
              &    asst_h(2,2), assg_h(2,2,2), etmt_h, etmg_h, su__(1), zw_, wsnew, &
              &    spgfcf_h, infx_h, ruptkt_h, su__,jactg(2,2,2), jactt(2,2), gstomg(2,2,2), &
@@ -207,19 +197,6 @@
       REAL*8,  INTENT(inout) :: tp_netassg
       REAL*8,  INTENT(inout) :: tp_netasst
       INTEGER, INTENT(in)    :: option1
-      REAL*8 :: Ma_lg
-      REAL*8 :: Ma_lt
-
-
-      select case(i_lai_function)
-      case(1)
-        Ma_lg = 1.0d0
-        Ma_lt = 1.0d0
-      case(2)
-!       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
-        Ma_lg = 1.d0 - p_E ** (-lai_lg(2) * i_extcoeffg)
-        Ma_lt = 1.d0 - p_E ** (-lai_lt(2) * i_extcoeffg)
-      end select
 
 
       !REAL*8, DIMENSION(21, c_maxday ), INTENT(inout) :: output_mat
@@ -230,7 +207,7 @@
 
         call vom_write_day( rain_d(nday), tairmax_d(nday), tairmin_d(nday), par_d(nday),   &
              &  vd_d / 24.d0, esoil_d, jmax25t_d(2), jmax25g_d(2),             &
-             &  o_cait*Ma_lt + caig_d(2)*Ma_lg, rlt_d , rlg_d, lambdat_d, lambdag_d,         &
+             &  o_cait*Ma_lt(2) + caig_d(2)*Ma_lg(2), rlt_d , rlg_d, lambdat_d, lambdag_d,         &
              &  rrt_d * 3600.d0 * 24.d0, rrg_d * 3600.d0 * 24.d0, asst_d(2,2), &
              &  assg_d(2,2,2), SUM(su__(1:wlayer_)) / wlayer_, zw_, wsnew,     &
              &  spgfcf_d, infx_d, etmt_d, etmg_d, su__(1), topt_,              &
@@ -1092,7 +1069,7 @@
       else       
          caig_d(2)     = MIN(1.d0 - o_cait, c_caigmin)
          caig_d(:)     = caig_d(2) + (/-i_incrcovg,0.0d0,i_incrcovg/)  ! vector with values varying by 1%
-         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), 1.d0 - o_cait)
+         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), (1.d0 - o_cait*Ma_lt(3))/Ma_lg(3))
       end if
 
       rootlim(:,:,:) = 0.d0
@@ -1182,7 +1159,7 @@
       else
          caig_d(:)     = caig_d(2) + (/-i_incrcovg,0.0d0,i_incrcovg/)  ! perc. change grass cover
          caig_d(:)     = MAX(caig_d(:), 0.d0)
-         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), 1.d0 - o_cait)
+         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), (1.d0 - o_cait*Ma_lt(3))/Ma_lg(3) )
       end if
 
 
@@ -1250,8 +1227,6 @@
       implicit none
 
       INTEGER :: ii           !counter
-      REAL*8 :: Ma_lg(3)      !local fraction of absorbed radiation grasses
-      REAL*8 :: Ma_lt(3)      !local fraction of absorbed radiation trees
 
 !     * (Out[274], derived from (3.25))
       gammastar = 0.00004275d0                                         &
@@ -1385,18 +1360,11 @@
       REAL*8 :: part1, part2, part3, part4, part5
       REAL*8 :: part6, part7, part8, part9
       INTEGER:: ii
-      REAL*8 :: Ma_lg(3)      !local fraction of absorbed radiation grasses
-      REAL*8 :: Ma_lt(3)      !local fraction of absorbed radiation trees
+
 
       if (par_h(th_) .gt. 0.d0) then
 !       * adaptation of topt to air temperature during sunlight
         topt_ = topt_ + i_toptf * (tair_h(th_) + 273.d0 - topt_)
-
-
-      select case(i_lai_function)
-      case(1)
-        Ma_lt(:) = 1.0d0
-        Ma_lg(:) = 1.0d0
 
 
 !       * calculate electron transport capacity trees
@@ -1414,32 +1382,6 @@
            jactg(3,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
      &             / jmaxg_h(:))) * jmaxg_h(:) * caig_d(3) * Ma_lg(ii)  ! (3.23), (Out[311])
         end do
-
-      case(2)
-!       * fraction of absorbed radiation per crown area (Beer-lambert)
-        Ma_lt(:) = 1.d0 - p_E ** (-lai_lt(:) * i_extcoefft )
-!       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
-        Ma_lg(:) = 1.d0 - p_E ** (-lai_lg(:) * i_extcoeffg)
-
-!       * calculate electron transport capacity trees
-        do ii = 1,3
-           jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &    
-        &             / jmaxt_h(:))) * jmaxt_h(:) * o_cait * Ma_lt(ii)  ! (3.23), (Out[311])
-        end do
-
-
-!       * calculate electron transport capacity grasses
-        do ii = 1,3
-           jactg(1,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * caig_d(1) * Ma_lg(ii)   ! (3.23), (Out[311])
-           jactg(2,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * caig_d(2) * Ma_lg(ii)  ! (3.23), (Out[311])
-           jactg(3,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * caig_d(3) * Ma_lg(ii)  ! (3.23), (Out[311])
-        end do
-
-
-      end select
 
 
         cond1      = (2.d0 * p_a * vd_h(th_)) / (ca_h(th_) + 2.d0 * gammastar)
