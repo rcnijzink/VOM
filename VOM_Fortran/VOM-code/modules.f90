@@ -269,6 +269,7 @@
       REAL*8              :: topt_      ! Optimal temperature in temperature response curve
 
       REAL*8, ALLOCATABLE :: press_d(:) ! Daily air pressure (Pa)
+      REAL*8, ALLOCATABLE :: press_h(:) ! Hourly air pressure (Pa)
 
       REAL*8, ALLOCATABLE :: par_h(:)   ! Hourly photosynthetically active radiation (mol/m2/s)
       REAL*8, ALLOCATABLE :: par_d(:)   ! Daily photosynthetically active radiation
