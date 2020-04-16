@@ -1160,8 +1160,7 @@
 
       !pc cannot become bigger than 1
       if( (o_cait*Ma_lt(3)) .ge. 1.0d0) then
-         lai_lt(:) = -1.0d0*log(1.0d0 + Ma_lt(:))/i_extcoefft
-         lai_lg(:) = 0.0d0
+         lai_lt(3) = -1.0d0*log(1.0d0 - (1.0d0/o_cait) )/i_extcoefft
       end if
 
       if( i_read_pc == 1) then   
