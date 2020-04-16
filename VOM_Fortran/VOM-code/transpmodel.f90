@@ -1148,6 +1148,22 @@
       lai_lg(:) = lai_lg(2) * (/1.0d0-i_incrlaig,1.0d0,1.0d0+i_incrlaig/) 
       lai_lg(:) = MAX( lai_lg(:), 0.1d0 ) !minimum value, else lai doesn't pick up anymore
 
+      select case(i_lai_function)
+      case(1)
+        Ma_lt(:) = 1.0d0
+        Ma_lg(:) = 1.0d0
+      case(2)
+!       * fraction of absorbed radiation per crown area (Beer-lambert)
+        Ma_lt(:) = 1.d0 - p_E ** (-lai_lt(:) * i_extcoefft )
+        Ma_lg(:) = 1.d0 - p_E ** (-lai_lg(:) * i_extcoeffg)
+      end select
+
+      !pc cannot become bigger than 1
+      if( (o_cait*Ma_lt(3)) .ge. 1.0d0) then
+         lai_lt(:) = -1.0d0*log(1.0d0 + Ma_lt(:))/i_extcoefft
+         lai_lg(:) = 0.0d0
+      end if
+
       if( i_read_pc == 1) then   
          caig_d(:) = perc_cov_veg(nday)  
 
@@ -1243,19 +1259,6 @@
      &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
      &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)
 
-      select case(i_lai_function)
-      case(1)
-        Ma_lt(:) = 1.0d0
-!       * (3.24), (Out[312]), leaf respiration trees
-        do ii = 1,3 !loop for LAI-values
-          rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cait * jmaxt_h(:)         &
-          &         * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar)   &
-          &         * (1.d0 + i_rlratio))
-         end do
-
-      case(2)
-!       * fraction of absorbed radiation per crown area (Beer-lambert)
-        Ma_lt(:) = 1.d0 - p_E ** (-lai_lt(:) * i_extcoefft )
 
 !       * (3.24), (Out[312]), leaf respiration trees
         do ii = 1,3 !loop for LAI-values
@@ -1263,8 +1266,6 @@
         &         * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar)   &
         &         * (1.d0 + i_rlratio))
         end do
-
-      end select
 
 
 !     * (Out[310], derived from (3.26)) Temperature dependence of Jmax
@@ -1277,9 +1278,6 @@
      &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
      &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)
 
-      select case(i_lai_function)
-      case(1)
-        Ma_lg(:) = 1.0d0
 
 !       * respiration grasses
         do ii = 1,3 !loop for LAI-values
@@ -1293,27 +1291,6 @@
           &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
           &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
        end do
-
-
-      case(2)
-!       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
-        Ma_lg(:) = 1.d0 - p_E ** (-lai_lg(:) * i_extcoeffg)
-
-!       * respiration grasses
-        do ii = 1,3 !loop for LAI-values
-          rlg_h(1,:,ii) = ((ca_h(th_) - gammastar) * caig_d(1) * jmaxg_h(:)    &
-          &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
-          &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-          rlg_h(2,:,ii) = ((ca_h(th_) - gammastar) * caig_d(2) * jmaxg_h(:)    &
-          &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
-          &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-          rlg_h(3,:,ii) = ((ca_h(th_) - gammastar) * caig_d(3) * jmaxg_h(:)    &
-          &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
-          &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-       end do
-
-      end select
-
 
 
 !     * daily recalculation for resultsdaily
@@ -2122,7 +2099,7 @@
          !check if carbon profit is higher for different LAI
          if( max_netcg_tmp .gt. max_netcg) then
             
-            caig_d_tmp = MIN(1.d0 - o_cait, caig_d(posbest(1))) !cover grasses to temporary variable
+            caig_d_tmp = MIN( (1.d0 - o_cait*Ma_lt(posbest(1)))/Ma_lg(posbest(1)), caig_d(posbest(1))) !cover grasses to temporary variable
             lai_g_tmp = lai_lg(ii)                          !lai grasses in temporary variable
             jmax25g_tmp = jmax25g_d(posbest(2))              !jmax25 grasses in temporary variable
             max_netcg = max_netcg_tmp                       !new NCP is higher as previous
