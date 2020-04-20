@@ -1068,9 +1068,9 @@
          end if
 
       else       
-         caig_d(2)     = MIN((1.d0 - o_cait*Ma_lt(2))/Ma_lg(2), c_caigmin)
+         caig_d(2)     = MIN((1.d0 - o_cait), c_caigmin)
          caig_d(:)     = caig_d(2) + (/-i_incrcovg,0.0d0,i_incrcovg/)  ! vector with values varying by 1%
-         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), (1.d0 - o_cait*Ma_lt(3))/Ma_lg(3))
+         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), 1.d0 - o_cait)
       end if
 
       rootlim(:,:,:) = 0.d0
@@ -1175,7 +1175,7 @@
       else
          caig_d(:)     = caig_d(2) + (/-i_incrcovg,0.0d0,i_incrcovg/)  ! perc. change grass cover
          caig_d(:)     = MAX(caig_d(:), 0.d0)
-         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), (1.d0 - o_cait*Ma_lt(3))/Ma_lg(3) )
+         caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), (1.d0 - o_cait) )
       end if
 
 
@@ -2099,7 +2099,7 @@
          !check if carbon profit is higher for different LAI
          if( max_netcg_tmp .gt. max_netcg) then
             
-            caig_d_tmp = MIN( (1.d0 - o_cait*Ma_lt(ii))/Ma_lg(ii), caig_d(posbest(1))) !cover grasses to temporary variable
+            caig_d_tmp = MIN( (1.d0 - o_cait), caig_d(posbest(1))) !cover grasses to temporary variable
             lai_g_tmp = lai_lg(ii)                          !lai grasses in temporary variable
             jmax25g_tmp = jmax25g_d(posbest(2))              !jmax25 grasses in temporary variable
             max_netcg = max_netcg_tmp                       !new NCP is higher as previous
