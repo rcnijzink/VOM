@@ -428,7 +428,8 @@
 
       REAL*8  :: i_alpha                ! Initial slope of electron transport curve
       REAL*8  :: i_cpccf                ! Water transport costs per m root depth and m^2 cover
-      REAL*8  :: i_tcf                  ! Turnover cost factor for foliage (tc=i_tcf*LAI)
+      REAL*8  :: i_tcft                 ! Turnover cost factor for tree foliage (tc=i_tcf*LAI)
+      REAL*8  :: i_tcfg                 ! Turnover cost factor for grass foliage (tc=i_tcf*LAI)
       INTEGER :: i_maxyear              ! Number of years to process
       INTEGER :: i_testyear             ! Number of years after which to perform initial test of netass
       REAL*8  :: i_ha                   ! Temperature response parameter
