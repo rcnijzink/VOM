@@ -811,6 +811,7 @@ end if
       !$OMP COPYIN( time, error, finish, nyear, nday, nhour, th_, c_testday,   & 
       !$OMP topt_, par_y, srad_y,  vd_d, vd_y, &
       !$OMP rain_y, gammastar, wsnew, wsold, o_cait, caig_d, c_caigmin, &
+      !$OMP lai_lg, lai_lt, Ma_lt, Ma_lg, &
       !$OMP o_wstexp, o_wsgexp, o_lambdatf, o_lambdagf, &
       !$OMP i_cz, i_cgs, i_zr, i_go, i_ksat, i_thetar, i_thetas, i_nvg, i_avg, &
       !$OMP lambdat_d, lambdag_d, gstomt, gstomg, &

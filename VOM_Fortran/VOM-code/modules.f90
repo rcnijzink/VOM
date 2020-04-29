@@ -490,6 +490,7 @@
       !$OMP threadprivate( time, error, finish, nyear, nday, nhour, th_, c_testday,   & 
       !$OMP topt_, par_y, srad_y,   &
       !$OMP vd_d, vd_y, rain_y, gammastar, wsnew, wsold, o_cait, caig_d, c_caigmin, &
+      !$OMP lai_lg, lai_lt, Ma_lt, Ma_lg, &
       !$OMP o_wstexp, o_wsgexp, o_lambdatf, o_lambdagf, lambdat_d, lambdag_d, gstomt, gstomg, &
       !$OMP rlt_h, rlt_d, rlt_y, rlg_h, rlg_d, rlg_y, transpt, transpg, q_tct_d, tct_y, tcg_d, &
       !$OMP tcg_y, jactt, jactg, jmaxt_h, jmaxg_h, jmax25t_d, jmax25g_d, &

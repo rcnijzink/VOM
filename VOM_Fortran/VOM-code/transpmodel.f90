@@ -1179,7 +1179,7 @@
          caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), (1.d0 - o_cait) )
       end if
 
-print *, caig_d(:)
+
 !     * Foliage turnover costs
       select case(i_lai_function)
       case(1)
@@ -1424,7 +1424,6 @@ print *, caig_d(:)
         gstomg(:,:,:) = 0.d0
         etmg__(:,:,:) = 0.d0
       endif
-
 
 
       return
@@ -2099,7 +2098,6 @@ print *, caig_d(:)
 
          !check if carbon profit is higher for different LAI
          if( max_netcg_tmp .gt. max_netcg) then
-            
             caig_d_tmp = MIN( (1.d0 - o_cait), caig_d(posbest(1))) !cover grasses to temporary variable
             lai_g_tmp = lai_lg(ii)                          !lai grasses in temporary variable
             jmax25g_tmp = jmax25g_d(posbest(2))              !jmax25 grasses in temporary variable
