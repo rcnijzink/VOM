@@ -823,7 +823,7 @@ end if
       !$OMP rootlim, posmna, rrt_d, rrt_y, rrg_d, rrg_y, sumruptkt_h,  &
       !$OMP wlayer_, wlayernew, dt_, dtmax, dtsu_count, dtmax_count, esoil__, esoil_h, &
       !$OMP esoil_d, esoil_y, spgfcf__, spgfcf_h, spgfcf_d, inf__, infx__, infx_h, infx_d, &
-      !$OMP zw_, zwnew, wc_,  io__, io_h, ioacum, &
+      !$OMP zw_, zwnew, wc_,  io__, io_h, ioacum, su__, &
       !$OMP ranscal, bestobj, bestincomp, evolution)
       !$OMP do SCHEDULE(DYNAMIC)
       do m_ = 1, ncomp2
