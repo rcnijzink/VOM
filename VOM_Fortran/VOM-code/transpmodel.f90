@@ -1169,7 +1169,7 @@
 
       else
          caig_d(:)     = caig_d(2) + (/-i_incrcovg,0.0d0,i_incrcovg/)  ! perc. change grass cover
-         caig_d(:)     = MAX(caig_d(:), 0.d0)
+         caig_d(:)     = MAX(caig_d(:), c_caigmin)
          caig_d(3)     = MIN(MAX(c_caigmin, caig_d(3)), 1.d0 - o_cait)
       end if
 
