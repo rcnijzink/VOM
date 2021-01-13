@@ -1265,7 +1265,7 @@
 
 !     * (3.24), (Out[312]), leaf respiration trees
      do ii = 1,3 !loop for LAI-values
-      rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cait * Ma_lt(ii) * jmaxt_h(:)         &
+      rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cait * Ma_lt(ii)* lai_lt(ii) * jmaxt_h(:)         &
      &         * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar)   &
      &         * (1.d0 + i_rlratio))
      end do
@@ -1290,13 +1290,13 @@
 
 !    * respiration grasses
      do ii = 1,3 !loop for LAI-values
-         rlg_h(1,:,ii) = ((ca_h(th_) - gammastar) * caig_d(1) * Ma_lg(ii) * jmaxg_h(:)    &
+         rlg_h(1,:,ii) = ((ca_h(th_) - gammastar) * caig_d(1) * Ma_lg(ii) * lai_lg(ii) * jmaxg_h(:)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-         rlg_h(2,:,ii) = ((ca_h(th_) - gammastar) * caig_d(2) * Ma_lg(ii) * jmaxg_h(:)    &
+         rlg_h(2,:,ii) = ((ca_h(th_) - gammastar) * caig_d(2) * Ma_lg(ii) * lai_lg(ii) * jmaxg_h(:)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-         rlg_h(3,:,ii) = ((ca_h(th_) - gammastar) * caig_d(3) * Ma_lg(ii) * jmaxg_h(:)    &
+         rlg_h(3,:,ii) = ((ca_h(th_) - gammastar) * caig_d(3) * Ma_lg(ii) * lai_lg(ii) * jmaxg_h(:)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
      end do
