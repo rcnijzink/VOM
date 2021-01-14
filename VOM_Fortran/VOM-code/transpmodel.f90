@@ -1342,7 +1342,7 @@
       REAL*8 :: cond3(3,3,3)
       REAL*8 :: part1, part2, part3, part4, part5
       REAL*8 :: part6, part7, part8, part9
-      REAL*8 :: rl_tmp
+      REAL*8 :: rl_tmp(3,3)
       INTEGER:: ii
 
 
@@ -1415,8 +1415,8 @@
         etmt__ = (transpt * 18.d0) / (10.d0 ** 6.d0)  ! transpiration rate in m/s
 
         do ii = 1,3
+        rl_tmp = rlg_h(:,:,ii) / lai_lg(ii)
         where (vd_h(th_) .gt. 0.d0 .and. lambdag_d .gt. cond1 .and. jactg(:,:,ii) .gt. cond3(:,:,ii))
-          rl_tmp = rlg_h(:,:,ii) / laig(ii)
           gstomg(:,:,ii) = MAX(0.d0,(0.25d0 * (p_a * (ca_h(th_)           &
            &          * (jactg(:,:,ii) - 4.d0 * rl_tmp) - 4.d0        &
            &          * gammastar * (jactg(:,:,ii) + 2.d0 * rl_tmp))  &
