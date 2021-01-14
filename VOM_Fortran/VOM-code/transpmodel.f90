@@ -1342,6 +1342,7 @@
       REAL*8 :: cond3(3,3,3)
       REAL*8 :: part1, part2, part3, part4, part5
       REAL*8 :: part6, part7, part8, part9
+      REAL*8 :: rl_tmp
       INTEGER:: ii
 
 
@@ -1415,15 +1416,16 @@
 
         do ii = 1,3
         where (vd_h(th_) .gt. 0.d0 .and. lambdag_d .gt. cond1 .and. jactg(:,:,ii) .gt. cond3(:,:,ii))
+          rl_tmp = rlg_h(:,:,ii) / laig(ii)
           gstomg(:,:,ii) = MAX(0.d0,(0.25d0 * (p_a * (ca_h(th_)           &
-           &          * (jactg(:,:,ii) - 4.d0 * rlg_h(:,:,ii)) - 4.d0        &
-           &          * gammastar * (jactg(:,:,ii) + 2.d0 * rlg_h(:,:,ii)))  &
+           &          * (jactg(:,:,ii) - 4.d0 * rl_tmp) - 4.d0        &
+           &          * gammastar * (jactg(:,:,ii) + 2.d0 * rl_tmp))  &
            &          * vd_h(th_) * (ca_h(th_) * lambdag_d + 2.d0      &
            &          * gammastar * lambdag_d - p_a * vd_h(th_))       &
            &          + 1.7320508075688772d0 * SQRT(p_a * gammastar    &
            &          * jactg(:,:,ii) * (ca_h(th_) * (jactg(:,:,ii) - 4.d0   &
-           &          * rlg_h(:,:,ii)) - gammastar * (jactg(:,:,ii) + 8.d0   &
-           &          * rlg_h(:,:,ii))) * vd_h(th_) * (ca_h(th_)          &
+           &          * rl_tmp) - gammastar * (jactg(:,:,ii) + 8.d0   &
+           &          * rl_tmp)) * vd_h(th_) * (ca_h(th_)          &
            &          * lambdag_d + 2.d0 * gammastar * lambdag_d       &
            &          - 2.d0 * p_a * vd_h(th_)) ** 2.d0 * (ca_h(th_)   &
            &          * lambdag_d + 2.d0 * gammastar * lambdag_d - p_a &
