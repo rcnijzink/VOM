@@ -1265,7 +1265,7 @@
 
 !     * (3.24), (Out[312]), leaf respiration trees
      do ii = 1,3 !loop for LAI-values
-      rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cait * Ma_lt(ii)* lai_lt(ii) * jmaxt_h(:)         &
+      rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cait * Ma_lt(ii) * jmaxt_h(:)         &
      &         * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar)   &
      &         * (1.d0 + i_rlratio))
      end do
@@ -1290,13 +1290,13 @@
 
 !    * respiration grasses
      do ii = 1,3 !loop for LAI-values
-         rlg_h(1,:,ii) = ((ca_h(th_) - gammastar) * caig_d(1) * Ma_lg(ii) * lai_lg(ii) * jmaxg_h(:)    &
+         rlg_h(1,:,ii) = ((ca_h(th_) - gammastar) * caig_d(1) * Ma_lg(ii) * jmaxg_h(:)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-         rlg_h(2,:,ii) = ((ca_h(th_) - gammastar) * caig_d(2) * Ma_lg(ii) * lai_lg(ii) * jmaxg_h(:)    &
+         rlg_h(2,:,ii) = ((ca_h(th_) - gammastar) * caig_d(2) * Ma_lg(ii) * jmaxg_h(:)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-         rlg_h(3,:,ii) = ((ca_h(th_) - gammastar) * caig_d(3) * Ma_lg(ii) * lai_lg(ii) * jmaxg_h(:)    &
+         rlg_h(3,:,ii) = ((ca_h(th_) - gammastar) * caig_d(3) * Ma_lg(ii) * jmaxg_h(:)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
      end do
@@ -1344,7 +1344,6 @@
       REAL*8 :: cond3(3,3,3)
       REAL*8 :: part1, part2, part3, part4, part5
       REAL*8 :: part6, part7, part8, part9
-      REAL*8 :: rl_tmp(3,3)
       INTEGER:: ii
 
 
@@ -1417,17 +1416,16 @@
         etmt__ = (transpt * 18.d0) / (10.d0 ** 6.d0)  ! transpiration rate in m/s
 
         do ii = 1,3
-        rl_tmp = rlg_h(:,:,ii) / lai_lg(ii)
         where (vd_h(th_) .gt. 0.d0 .and. lambdag_d .gt. cond1 .and. jactg(:,:,ii) .gt. cond3(:,:,ii))
           gstomg(:,:,ii) = MAX(0.d0,(0.25d0 * (p_a * (ca_h(th_)           &
-           &          * (jactg(:,:,ii) - 4.d0 * rl_tmp) - 4.d0        &
-           &          * gammastar * (jactg(:,:,ii) + 2.d0 * rl_tmp))  &
+           &          * (jactg(:,:,ii) - 4.d0 * rlg_h(:,:,ii)) - 4.d0        &
+           &          * gammastar * (jactg(:,:,ii) + 2.d0 * rlg_h(:,:,ii)))  &
            &          * vd_h(th_) * (ca_h(th_) * lambdag_d + 2.d0      &
            &          * gammastar * lambdag_d - p_a * vd_h(th_))       &
            &          + 1.7320508075688772d0 * SQRT(p_a * gammastar    &
            &          * jactg(:,:,ii) * (ca_h(th_) * (jactg(:,:,ii) - 4.d0   &
-           &          * rl_tmp) - gammastar * (jactg(:,:,ii) + 8.d0   &
-           &          * rl_tmp)) * vd_h(th_) * (ca_h(th_)          &
+           &          * rlg_h(:,:,ii)) - gammastar * (jactg(:,:,ii) + 8.d0   &
+           &          * rlg_h(:,:,ii))) * vd_h(th_) * (ca_h(th_)          &
            &          * lambdag_d + 2.d0 * gammastar * lambdag_d       &
            &          - 2.d0 * p_a * vd_h(th_)) ** 2.d0 * (ca_h(th_)   &
            &          * lambdag_d + 2.d0 * gammastar * lambdag_d - p_a &
