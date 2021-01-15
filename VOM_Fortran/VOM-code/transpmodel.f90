@@ -1238,23 +1238,9 @@
       implicit none
 
       INTEGER :: ii           !counter
+      INTEGER :: jj           !counter
 
-
-!     * (Out[274], derived from (3.25))
-      gammastar = 0.00004275d0                                         &
-     &          * p_E ** ((18915.d0 * (-25.d0 + tair_h(th_)))          &
-     &          / (149.d0 * p_R_ * (273.d0 + tair_h(th_))))
-
-!     * (Out[310], derived from (3.26)) Temperature dependence of Jmax
-      jmaxt_h(:) = (p_E ** ((i_ha * (-25.d0 + tair_h(th_)) * (-273.d0  &
-     &           + topt_ + 273.d0 * p_R_ * topt_)) / ((25.d0 + 273.d0  &
-     &           * p_R_ * topt_) * (tair_h(th_) + 273.d0 * p_R_        &
-     &           * topt_))) * ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
-     &           + topt_)) / (25.d0 + 273.d0 * p_R_ * topt_))) * i_ha  &
-     &           + i_hd) * jmax25t_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
-     &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
-     &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)
-
+!     ---trees--
       select case(i_lai_function)
       case(1)
         Ma_lt(:) = 1.0d0
@@ -1263,23 +1249,30 @@
         Ma_lt(:) = 1.0d0 - p_E ** (-lai_lt(:) * i_extcoefft )
       end select
 
-!     * (3.24), (Out[312]), leaf respiration trees
+!     * (Out[274], derived from (3.25))
+      gammastar = 0.00004275d0                                         &
+     &          * p_E ** ((18915.d0 * (-25.d0 + tair_h(th_)))          &
+     &          / (149.d0 * p_R_ * (273.d0 + tair_h(th_))))
+
      do ii = 1,3 !loop for LAI-values
-      rlt_h(:,ii) = ((ca_h(th_) - gammastar) * o_cait * Ma_lt(ii) * jmaxt_h(:)         &
-     &         * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar)   &
-     &         * (1.d0 + i_rlratio))
+!        * (Out[310], derived from (3.26)) Temperature dependence of Jmax
+         jmaxt_h(:,ii) = ((p_E ** ((i_ha * (-25.d0 + tair_h(th_)) * (-273.d0  &
+        &           + topt_ + 273.d0 * p_R_ * topt_)) / ((25.d0 + 273.d0  &
+        &           * p_R_ * topt_) * (tair_h(th_) + 273.d0 * p_R_        &
+        &           * topt_))) * ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
+        &           + topt_)) / (25.d0 + 273.d0 * p_R_ * topt_))) * i_ha  &
+        &           + i_hd) * jmax25t_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
+        &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
+        &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd))* o_cait &
+        &           * Ma_lt(ii) * lai_lt(ii)
+
+!       * (3.24), (Out[312]), leaf respiration trees
+         rlt_h(:,ii) = ((ca_h(th_) - gammastar) * jmaxt_h(:,ii)         &
+        &         * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar)   &
+        &         * (1.d0 + i_rlratio))
      end do
 
-!     * (Out[310], derived from (3.26)) Temperature dependence of Jmax
-      jmaxg_h(:) = (p_E ** ((i_ha * (-25.d0 + tair_h(th_)) * (-273.d0  &
-     &           + topt_ + 273.d0 * p_R_ * topt_)) / ((25.d0 + 273.d0  &
-     &           * p_R_ * topt_) * (tair_h(th_) + 273.d0 * p_R_        &
-     &           * topt_))) * ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
-     &           + topt_)) / (25.d0 + 273.d0 * p_R_ * topt_))) * i_ha  &
-     &           + i_hd) * jmax25g_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
-     &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
-     &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)
-
+!     ---grasses--
       select case(i_lai_function)
       case(1)
         Ma_lg(:) = 1.0d0
@@ -1288,17 +1281,25 @@
         Ma_lg(:) = 1.0d0 - p_E ** (-lai_lg(:) * i_extcoeffg)
       end select
 
-!    * respiration grasses
      do ii = 1,3 !loop for LAI-values
-         rlg_h(1,:,ii) = ((ca_h(th_) - gammastar) * caig_d(1) * Ma_lg(ii) * jmaxg_h(:)    &
+!        * (Out[310], derived from (3.26)) Temperature dependence of Jmax
+
+        do jj =1, 3 !loop for jmax25g
+        jmaxg_h(jj,:,ii) = ((p_E ** ((i_ha * (-25.d0 + tair_h(th_)) * (-273.d0  &
+        &           + topt_ + 273.d0 * p_R_ * topt_)) / ((25.d0 + 273.d0  &
+        &           * p_R_ * topt_) * (tair_h(th_) + 273.d0 * p_R_        &
+        &           * topt_))) * ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
+        &           + topt_)) / (25.d0 + 273.d0 * p_R_ * topt_))) * i_ha  &
+        &           + i_hd) * jmax25g_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
+        &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
+        &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)) * caig_d(jj)&
+        &           * Ma_lg(ii) * lai_lg(ii)
+
+!       * respiration grasses
+         rlg_h(jj,:,ii) = ((ca_h(th_) - gammastar)  * jmaxg_h(jj,:,ii)    &
         &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
         &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-         rlg_h(2,:,ii) = ((ca_h(th_) - gammastar) * caig_d(2) * Ma_lg(ii) * jmaxg_h(:)    &
-        &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
-        &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
-         rlg_h(3,:,ii) = ((ca_h(th_) - gammastar) * caig_d(3) * Ma_lg(ii) * jmaxg_h(:)    &
-        &           * i_rlratio) / (4.d0 * (ca_h(th_) + 2.d0 * gammastar) &
-        &           * (1.d0 + i_rlratio))  ! (3.24), (Out[312])
+        end do
      end do
 
 !     * daily recalculation for resultsdaily
@@ -1345,44 +1346,25 @@
       REAL*8 :: part1, part2, part3, part4, part5
       REAL*8 :: part6, part7, part8, part9
       INTEGER:: ii
-
+      INTEGER:: jj
 
       if (par_h(th_) .gt. 0.d0) then
 !       * adaptation of topt to air temperature during sunlight
         topt_ = topt_ + i_toptf * (tair_h(th_) + 273.d0 - topt_)
 
 
-      select case(i_lai_function)
-      case(1)
-        Ma_lt(:) = 1.0d0
-      case(2)
-!       * fraction of absorbed radiation per crown area (Beer-lambert)
-        Ma_lt(:) = 1.0d0 - p_E ** (-lai_lt(:) * i_extcoefft )
-      end select
-
 !       * calculate electron transport capacity trees
         do ii = 1,3
            jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &    
-        &             / jmaxt_h(:))) * jmaxt_h(:) * o_cait * Ma_lt(ii)  ! (3.23), (Out[311])
+        &             / jmaxt_h(:,ii))) * jmaxt_h(:,ii) ! (3.23), (Out[311])
         end do
-
-      select case(i_lai_function)
-      case(1)
-        Ma_lg(:) = 1.0d0
-      case(2)
-!       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
-        Ma_lg(:) = 1.0d0 - p_E ** (-lai_lg(:) * i_extcoeffg)
-      end select
-
 
 !       * calculate electron transport capacity grasses
         do ii = 1,3
-           jactg(1,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * caig_d(1) * Ma_lg(ii)  ! (3.23), (Out[311])
-           jactg(2,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * caig_d(2) * Ma_lg(ii)  ! (3.23), (Out[311])
-           jactg(3,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
-     &             / jmaxg_h(:))) * jmaxg_h(:) * caig_d(3) * Ma_lg(ii)  ! (3.23), (Out[311])
+           do jj = 1,3
+           jactg(jj,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
+     &             / jmaxg_h(jj,:,ii) )) * jmaxg_h(jj,:,ii)   ! (3.23), (Out[311])
+           end do
         end do
 
         cond1      = (2.d0 * p_a * vd_h(th_)) / (ca_h(th_) + 2.d0 * gammastar)

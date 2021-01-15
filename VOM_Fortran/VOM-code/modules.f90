@@ -372,8 +372,8 @@
       REAL*8  :: jactt(3,3)             ! Electron transport rates for different values of Jmax (jactt(2) is actual value) (mol/m2/s)
       REAL*8  :: jactg(3,3,3)           ! Grass electron transport rate (mol/m2/s)
 
-      REAL*8  :: jmaxt_h(3)             ! Tree photosynthetic electron transport capacity (mol/m2/s)
-      REAL*8  :: jmaxg_h(3)             ! Grass electron transport capacity (mol/m2/s)
+      REAL*8  :: jmaxt_h(3,3)           ! Tree photosynthetic electron transport capacity (mol/m2/s)
+      REAL*8  :: jmaxg_h(3,3,3)         ! Grass electron transport capacity (mol/m2/s)
 
       REAL*8  :: jmax25t_d(3)           ! Tree photosynthetic electron transport capacity at 25oC (mol/m2/s)
       REAL*8  :: jmax25g_d(3)           ! Grass photosynthetic electron transport capacity at 25oC (mol/m2/s)
