@@ -1179,13 +1179,13 @@
       case(1)
 !        * (3.38) foliage turnover costs, assuming LAI/pc of 2.5
          do ii = 1,3
-            tcg_d(ii,:)     = i_tcf * caig_d(:) * 2.5d0 !grasses
+            tcg_d(:,ii)     = i_tcf * caig_d(:) * 2.5d0 !grasses
          end do
          q_tct_d(:)     = i_tcf * o_cait * 2.5d0    !trees
       case(2)
 !        * foliage turnover costs, varying lai
          do ii = 1,3
-            tcg_d(ii, :) = i_tcf * caig_d(:) * lai_lg(ii) !grasses 
+            tcg_d(:, ii) = i_tcf * caig_d(:) * lai_lg(ii) !grasses 
          end do
          q_tct_d(:) = i_tcf * o_cait * lai_lt(:)     !trees
       end select
@@ -1257,15 +1257,14 @@
 
      do ii = 1,3 !loop for LAI-values
 !        * (Out[310], derived from (3.26)) Temperature dependence of Jmax
-         jmaxt_h(:,ii) =  ((p_E ** ((i_ha * (-25.d0 + tair_h(th_)))                &
+         jmaxt_h(:,ii) = ((p_E ** ((i_ha * (-25.d0 + tair_h(th_)))                &
         &           / ((25.d0 + 273.d0)  * p_R_ * (tair_h(th_) + 273.d0) )) &
         &           * ((-1.d0 + p_E ** (-(i_hd * (-298.d0                   &
         &           + topt_)) /( (25.d0 + 273.d0) * p_R_ * topt_))) * i_ha  &
         &           + i_hd) * jmax25t_d(:)) / ((-1.d0 + p_E ** ((i_hd       &
         &           * (273.d0 + tair_h(th_) - topt_)) / ( (tair_h(th_)      &
-        &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd) )* Ma_lt(ii) &
-
-
+        &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd) ) * o_cait *
+        &           Ma_lt(ii) 
 
 !       * (3.24), (Out[312]), leaf respiration trees
          rlt_h(:,ii) = ((ca_h(th_) - gammastar) * jmaxt_h(:,ii)         &
@@ -1285,15 +1284,15 @@
      do ii = 1,3 !loop for LAI-values
 !        * (Out[310], derived from (3.26)) Temperature dependence of Jmax
 
-        do jj =1, 3 !loop for jmax25g
+        do jj =1, 3 !loop for caig
         jmaxg_h(jj,:,ii) = ((p_E ** ((i_ha * (-25.d0 + tair_h(th_)))                 &
         &           / ((25.d0 + 273.d0)  * p_R_ * (tair_h(th_) + 273.d0) )) &
         &           * ((-1.d0 + p_E ** (-(i_hd * (-298.d0                   &
         &           + topt_)) /( (25.d0 + 273.d0) * p_R_ * topt_))) * i_ha  &
         &           + i_hd) * jmax25g_d(:)) / ((-1.d0 + p_E ** ((i_hd       &
         &           * (273.d0 + tair_h(th_) - topt_)) / ( (tair_h(th_)      &
-        &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd)) * caig_d(:) *
-       &            Ma_lg(ii) &
+        &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd)) * caig_d(jj) *
+       &            Ma_lg(ii) 
 
 
 !       * respiration grasses
@@ -1361,8 +1360,8 @@
         end do
 
 !       * calculate electron transport capacity grasses
-        do ii = 1,3
-           do jj = 1,3
+        do ii = 1,3 ! loop for LAI
+           do jj = 1,3 ! loop for caig
            jactg(jj,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
      &             / jmaxg_h(jj,:,ii) )) * jmaxg_h(jj,:,ii)   ! (3.23), (Out[311])
            end do
@@ -1398,7 +1397,7 @@
         transpt = p_a * vd_h(th_) * gstomt  ! (3.28) transpiration rate in mol/s
         etmt__ = (transpt * 18.d0) / (10.d0 ** 6.d0)  ! transpiration rate in m/s
 
-        do ii = 1,3
+        do ii = 1,3 !loop for LAI
         where (vd_h(th_) .gt. 0.d0 .and. lambdag_d .gt. cond1 .and. jactg(:,:,ii) .gt. cond3(:,:,ii))
           gstomg(:,:,ii) = MAX(0.d0,(0.25d0 * (p_a * (ca_h(th_)           &
            &          * (jactg(:,:,ii) - 4.d0 * rlg_h(:,:,ii)) - 4.d0        &
@@ -2056,12 +2055,12 @@
       max_netcg    = -9999.d0
 
       !loop over foliage costs due to different LAI
-      do ii = 1,3
+      do ii = 1,3 !loop
 
          !3 values of ncp due to different cover (rows in assg_d) and jmax25g (columns in assg_d)
-         netcg_d(1,:) = assg_d(1,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(1) + rrg_d + tcg_d(ii, 1))
-         netcg_d(2,:) = assg_d(2,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(2) + rrg_d + tcg_d(ii, 2))
-         netcg_d(3,:) = assg_d(3,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(3) + rrg_d + tcg_d(ii, 3))
+         netcg_d(1,:) = assg_d(1,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(1) + rrg_d + tcg_d(1, ii))
+         netcg_d(2,:) = assg_d(2,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(2) + rrg_d + tcg_d(2, ii))
+         netcg_d(3,:) = assg_d(3,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(3) + rrg_d + tcg_d(3, ii))
          posbest(:)    = MAXLOC(netcg_d(:,:))
          max_netcg_tmp= netcg_d( posbest(1), posbest(2) )
 
