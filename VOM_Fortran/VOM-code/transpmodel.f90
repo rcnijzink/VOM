@@ -218,7 +218,7 @@
              &  assg_d(2,2,2), SUM(su__(1:wlayer_)) / wlayer_, zw_, wsnew,     &
              &  spgfcf_d, infx_d, etmt_d, etmg_d, su__(1), topt_,              &
              & tcg_d(2,2), q_tct_d(2), cpccg_d(2), q_cpcct_d,                  &
-             & lai_lt(2), lai_lg(2), tp_netassg, tp_netasst, rsurft_, i_write_nc )             
+             & lai_lt(2)*o_cait, lai_lg(2)*caig_d(2), tp_netassg, tp_netasst, rsurft_, i_write_nc )             
 
        if (fyear(nday) .ne. nyear) then
 !       * for calculation of vd_y a -1 is added to nday for using dayyear of correct year
@@ -1257,14 +1257,15 @@
 
      do ii = 1,3 !loop for LAI-values
 !        * (Out[310], derived from (3.26)) Temperature dependence of Jmax
-         jmaxt_h(:,ii) = ((p_E ** ((i_ha * (-25.d0 + tair_h(th_)))                &
+         jmaxt_h(:,ii) =  ((p_E ** ((i_ha * (-25.d0 + tair_h(th_)))                &
         &           / ((25.d0 + 273.d0)  * p_R_ * (tair_h(th_) + 273.d0) )) &
         &           * ((-1.d0 + p_E ** (-(i_hd * (-298.d0                   &
         &           + topt_)) /( (25.d0 + 273.d0) * p_R_ * topt_))) * i_ha  &
         &           + i_hd) * jmax25t_d(:)) / ((-1.d0 + p_E ** ((i_hd       &
         &           * (273.d0 + tair_h(th_) - topt_)) / ( (tair_h(th_)      &
         &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd) ) * o_cait * &
-        &           Ma_lt(ii)
+        &           lai_lt(ii) 
+
 
 !       * (3.24), (Out[312]), leaf respiration trees
          rlt_h(:,ii) = ((ca_h(th_) - gammastar) * jmaxt_h(:,ii)         &
@@ -1285,14 +1286,14 @@
 !        * (Out[310], derived from (3.26)) Temperature dependence of Jmax
 
         do jj =1, 3 !loop for caig
-        jmaxg_h(jj,:,ii) = ((p_E ** ((i_ha * (-25.d0 + tair_h(th_)))                 &
+        jmaxg_h(jj,:,ii) =((p_E ** ((i_ha * (-25.d0 + tair_h(th_)))                 &
         &           / ((25.d0 + 273.d0)  * p_R_ * (tair_h(th_) + 273.d0) )) &
         &           * ((-1.d0 + p_E ** (-(i_hd * (-298.d0                   &
         &           + topt_)) /( (25.d0 + 273.d0) * p_R_ * topt_))) * i_ha  &
         &           + i_hd) * jmax25g_d(:)) / ((-1.d0 + p_E ** ((i_hd       &
         &           * (273.d0 + tair_h(th_) - topt_)) / ( (tair_h(th_)      &
         &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd)) * caig_d(jj) * &
-        &            Ma_lg(ii)
+        &            lai_lg(ii) 
 
 
 !       * respiration grasses
@@ -1355,14 +1356,14 @@
 
 !       * calculate electron transport capacity trees
         do ii = 1,3
-           jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &    
+           jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lt(ii) )           &    
         &             / jmaxt_h(:,ii))) * jmaxt_h(:,ii) ! (3.23), (Out[311])
         end do
 
 !       * calculate electron transport capacity grasses
         do ii = 1,3 ! loop for LAI
            do jj = 1,3 ! loop for caig
-           jactg(jj,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_))           &
+           jactg(jj,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lg(ii))           &
      &             / jmaxg_h(jj,:,ii) )) * jmaxg_h(jj,:,ii)   ! (3.23), (Out[311])
            end do
         end do
