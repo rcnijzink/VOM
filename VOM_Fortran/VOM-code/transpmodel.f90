@@ -1026,8 +1026,17 @@
       mqtnew = 0.95d0 * q_mqx                  ! initial wood water storage
       mqtold = mqtnew
       rsurftnew(:) = 0.d0
-      lai_lt(:) = 2.5d0 * (/1.0d0-i_incrlait,1.0d0,1.0d0+i_incrlait/)
-      lai_lg(:) = 2.5d0 * (/1.0d0-i_incrlaig,1.0d0,1.0d0+i_incrlaig/)
+
+      select case(i_lai_function)
+      case(1)
+         lai_lt(:) = 1.0d0
+         lai_lg(:) = 1.0d0
+         i_incrlait = 0.0d0
+         i_incrlaig = 0.0d0
+      case(2)
+         lai_lt(:) = 2.5d0 * (/1.0d0-i_incrlait,1.0d0,1.0d0+i_incrlait/)
+         lai_lg(:) = 2.5d0 * (/1.0d0-i_incrlaig,1.0d0,1.0d0+i_incrlaig/)
+      end select
 
 !     * Determining the position of the bottom of the tree root zone
 
@@ -1256,14 +1265,12 @@
 
      do ii = 1,3 !loop for LAI-values
 !        * (Out[310], derived from (3.26)) Temperature dependence of Jmax
-         jmaxt_h(:,ii) = ((p_E ** ((i_ha * (-25.d0 + tair_h(th_)) * (-273.d0  &
-        &           + topt_ + 273.d0 * p_R_ * topt_)) / ((25.d0 + 273.d0  &
-        &           * p_R_ * topt_) * (tair_h(th_) + 273.d0 * p_R_        &
-        &           * topt_))) * ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
-        &           + topt_)) / (25.d0 + 273.d0 * p_R_ * topt_))) * i_ha  &
+         jmaxt_h(:,ii) = (p_E ** ((i_ha * (-25.d0 + tair_h(th_))) / ((25.d0 + 273.d0)  &
+        &           * p_R_ * (tair_h(th_) + 273.d0) ))* ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
+        &           + topt_)) /( (25.d0 + 273.d0) * p_R_ * topt_))) * i_ha  &
         &           + i_hd) * jmax25t_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
-        &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
-        &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)) * o_cait * &
+        &           * (273.d0 + tair_h(th_) - topt_)) / ( (tair_h(th_)      &
+        &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd) * o_cait * &
         &           lai_lt(ii) 
 
 !       * (3.24), (Out[312]), leaf respiration trees
@@ -1285,14 +1292,12 @@
 !        * (Out[310], derived from (3.26)) Temperature dependence of Jmax
 
         do jj =1, 3 !loop for caig
-        jmaxg_h(jj,:,ii) = ((p_E ** ((i_ha * (-25.d0 + tair_h(th_)) * (-273.d0  &
-        &           + topt_ + 273.d0 * p_R_ * topt_)) / ((25.d0 + 273.d0  &
-        &           * p_R_ * topt_) * (tair_h(th_) + 273.d0 * p_R_        &
-        &           * topt_))) * ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
-        &           + topt_)) / (25.d0 + 273.d0 * p_R_ * topt_))) * i_ha  &
+        jmaxg_h(jj,:,ii) = (p_E ** ((i_ha * (-25.d0 + tair_h(th_))) / ((25.d0 + 273.d0)  &
+        &           * p_R_ * (tair_h(th_) + 273.d0) )) * ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
+        &           + topt_)) /( (25.d0 + 273.d0) * p_R_ * topt_))) * i_ha  &
         &           + i_hd) * jmax25g_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
-        &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
-        &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)) * caig_d(jj) * &
+        &           * (273.d0 + tair_h(th_) - topt_)) / ( (tair_h(th_)      &
+        &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd) * caig_d(jj) * &
        &            lai_lg(ii) 
 
 !       * respiration grasses
@@ -1355,15 +1360,30 @@
 
 !       * calculate electron transport capacity trees
         do ii = 1,3
-           jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lt(ii) )           &    
+
+         select case(i_lai_function) !for back-compatability, needs to be checked
+         case(1)
+           jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lt(ii) * o_cait )           &    
         &             / jmaxt_h(:,ii))) * jmaxt_h(:,ii) ! (3.23), (Out[311])
+         case(2)
+           jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lt(ii)  )           &    
+        &             / jmaxt_h(:,ii))) * jmaxt_h(:,ii) ! (3.23), (Out[311])
+         end select
+
         end do
 
 !       * calculate electron transport capacity grasses
         do ii = 1,3 ! loop for LAI
            do jj = 1,3 ! loop for caig
-           jactg(jj,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lg(ii))           &
+
+         select case(i_lai_function) !for back-compatability, needs to be checked
+         case(1)
+           jactg(jj,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lg(ii) * caig_d(jj)   )           &
      &             / jmaxg_h(jj,:,ii) )) * jmaxg_h(jj,:,ii)   ! (3.23), (Out[311])
+         case(2)
+           jactg(jj,:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lg(ii)   )           &
+     &             / jmaxg_h(jj,:,ii) )) * jmaxg_h(jj,:,ii)   ! (3.23), (Out[311])
+         end select
            end do
         end do
 
