@@ -1246,14 +1246,19 @@
      &          / (149.d0 * p_R_ * (273.d0 + tair_h(th_))))
 
 !     * (Out[310], derived from (3.26)) Temperature dependence of Jmax
-      jmaxt_h(:) = (p_E ** ((i_ha * (-25.d0 + tair_h(th_)) * (-273.d0  &
-     &           + topt_ + 273.d0 * p_R_ * topt_)) / ((25.d0 + 273.d0  &
-     &           * p_R_ * topt_) * (tair_h(th_) + 273.d0 * p_R_        &
-     &           * topt_))) * ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
-     &           + topt_)) / (25.d0 + 273.d0 * p_R_ * topt_))) * i_ha  &
-     &           + i_hd) * jmax25t_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
-     &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
-     &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)
+!      jmaxt_h(:) = (p_E ** ((i_ha * (-25.d0 + tair_h(th_)) * (-273.d0  &
+!     &           + topt_ + 273.d0 * p_R_ * topt_)) / ((25.d0 + 273.d0  &
+!     &           * p_R_ * topt_) * (tair_h(th_) + 273.d0 * p_R_        &
+!     &           * topt_))) * ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
+!     &           + topt_)) / (25.d0 + 273.d0 * p_R_ * topt_))) * i_ha  &
+!     &           + i_hd) * jmax25t_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
+!     &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
+!     &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)
+
+!     * new formulation of Jmax by June et al. (2004)
+      i_omega = 18.d0 
+      jmaxt_h(:) = jmax25t_d(:) * p_E ** ( -( (tair_h(th_) + 273.d0 -topt_ ) / &
+                   i_omega)**2.d0)
 
       select case(i_lai_function)
       case(1)
@@ -1271,14 +1276,20 @@
      end do
 
 !     * (Out[310], derived from (3.26)) Temperature dependence of Jmax
-      jmaxg_h(:) = (p_E ** ((i_ha * (-25.d0 + tair_h(th_)) * (-273.d0  &
-     &           + topt_ + 273.d0 * p_R_ * topt_)) / ((25.d0 + 273.d0  &
-     &           * p_R_ * topt_) * (tair_h(th_) + 273.d0 * p_R_        &
-     &           * topt_))) * ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
-     &           + topt_)) / (25.d0 + 273.d0 * p_R_ * topt_))) * i_ha  &
-     &           + i_hd) * jmax25g_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
-     &           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
-     &           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)
+     ! jmaxg_h(:) = (p_E ** ((i_ha * (-25.d0 + tair_h(th_)) * (-273.d0  &
+     !&           + topt_ + 273.d0 * p_R_ * topt_)) / ((25.d0 + 273.d0  &
+     !&           * p_R_ * topt_) * (tair_h(th_) + 273.d0 * p_R_        &
+     !&           * topt_))) * ((-1.d0 + p_E ** (-(i_hd * (-298.d0      &
+     !&           + topt_)) / (25.d0 + 273.d0 * p_R_ * topt_))) * i_ha  &
+     !&           + i_hd) * jmax25g_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
+     !&           * (273.d0 + tair_h(th_) - topt_)) / (tair_h(th_)      &
+     !&           + 273.d0 * p_R_ * topt_))) * i_ha + i_hd)
+
+!     * new formulation of Jmax by June et al. (2004)
+      i_omega = 18.d0 
+      jmaxg_h(:) = jmax25g_d(:) * p_E ** ( - ( (tair_h(th_) + 273.d0 -topt_ ) / &
+                   i_omega)**2.d0)
+
 
       select case(i_lai_function)
       case(1)

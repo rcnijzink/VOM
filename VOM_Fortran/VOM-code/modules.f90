@@ -469,6 +469,7 @@
       INTEGER :: i_testyear             ! Number of years after which to perform initial test of netass
       REAL*8  :: i_ha                   ! Temperature response parameter (J/mol)
       REAL*8  :: i_hd                   ! Temperature response parameter (J/mol)
+      REAL*8  :: i_omega                ! Temp. diff. from Topt at which J falls to e –1 (0.37) of its value at Topt (K)
       REAL*8  :: i_toptf                ! Parameter to calculate adaptation of topt (range 0-1 for no to full adaptation) (-)
       REAL*8  :: i_toptstart            ! Start temperature parameter for topt to calculate jmax (K)
       REAL*8  :: i_rlratio              ! Ratio of leaf respiration to photosynthetic capacity (-)
