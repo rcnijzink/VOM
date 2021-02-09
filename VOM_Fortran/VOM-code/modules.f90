@@ -352,17 +352,17 @@
       REAL*8  :: lambdat_d              ! Target dE/dA for calculating gstomt (mol/mol)
       REAL*8  :: lambdag_d              ! Target dE/dA for calculating gstomg (mol/mol)
       REAL*8  :: gstomt                 ! Tree stomatal conductance (mol/m2/s)
-      REAL*8  :: gstomg(3,3,3)          ! Grass stomatal conductance (mol/m2/s)
+      REAL*8  :: gstomg(3,3)          ! Grass stomatal conductance (mol/m2/s)
 
       REAL*8  :: rlt_h(3,3)             ! Tree leaf respiration for different values of Jmax (rlt_h(2) is actual value) (mol/h)
       REAL*8  :: rlt_d                  ! Daily tree leaf respiration (mol/d)
       REAL*8  :: rlt_y                  ! Annual tree leaf respiration (mol/y)
-      REAL*8  :: rlg_h(3,3,3)           ! Grass leaf respiration (mol/h)
+      REAL*8  :: rlg_h(3,3)           ! Grass leaf respiration (mol/h)
       REAL*8  :: rlg_d                  ! Daily grass leaf respiration (mol/d)
       REAL*8  :: rlg_y                  ! Annual grass leaf respiration (mol/y)
 
       REAL*8  :: transpt                ! Tree transpiration rate (mol/m2/s)
-      REAL*8  :: transpg(3,3,3)         ! Grass transpiration rate (mol/m2/s)
+      REAL*8  :: transpg(3,3)         ! Grass transpiration rate (mol/m2/s)
 
       REAL*8  :: q_tct_d(3)             ! Tree foliage turnover costs (mol/m2/s)
       REAL*8  :: tct_y                  ! Annual tree foliage turnover costs (mol/m2/y)
@@ -370,10 +370,10 @@
       REAL*8  :: tcg_y                  ! Annual grass foliage turnover costs (mol/m2/y)
 
       REAL*8  :: jactt(3,3)             ! Electron transport rates for different values of Jmax (jactt(2) is actual value) (mol/m2/s)
-      REAL*8  :: jactg(3,3,3)           ! Grass electron transport rate (mol/m2/s)
+      REAL*8  :: jactg(3,3)           ! Grass electron transport rate (mol/m2/s)
 
       REAL*8  :: jmaxt_h(3,3)           ! Tree photosynthetic electron transport capacity (mol/m2/s)
-      REAL*8  :: jmaxg_h(3,3,3)         ! Grass electron transport capacity (mol/m2/s)
+      REAL*8  :: jmaxg_h(3,3)         ! Grass electron transport capacity (mol/m2/s)
 
       REAL*8  :: jmax25t_d(3)           ! Tree photosynthetic electron transport capacity at 25oC (mol/m2/s)
       REAL*8  :: jmax25g_d(3)           ! Grass photosynthetic electron transport capacity at 25oC (mol/m2/s)
@@ -399,7 +399,7 @@
       REAL*8  :: etmt_h                 ! Hourly transpiration (m/h)
       REAL*8  :: etmt_d                 ! Daily transpiration rate (m/d)
       REAL*8  :: etmt_y                 ! Annual tree transpiration (mm/y)
-      REAL*8  :: etmg__(3,3,3)          ! Grass transpiration rate (m/s)
+      REAL*8  :: etmg__(3,3)          ! Grass transpiration rate (m/s)
       REAL*8  :: etmg_h                 ! Hourly grass transpiration (m/h)
       REAL*8  :: etmg_d                 ! Daily grass transpiration (m/d)
       REAL*8  :: etmg_y                 ! Annual grass transpiration (mm/y)
@@ -433,7 +433,7 @@
       REAL*8, ALLOCATABLE :: rsurfg_(:)    ! Root surface area of grasses in each layer (m2/m3)
       REAL*8, ALLOCATABLE :: rsurfgnew(:)  ! Adjusted root surface area of grasses in each layer for next day (m2/m3)
 
-      REAL*8              :: rootlim(3,3,3)  ! Indicator whether root surface are was limiting root water uptake (-)
+      REAL*8              :: rootlim(3,3)  ! Indicator whether root surface are was limiting root water uptake (-)
 
       REAL*8, ALLOCATABLE :: rsoil(:)   ! Resistance to water flow towards roots in each soil layer (s)
 
