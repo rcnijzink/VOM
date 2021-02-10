@@ -1270,7 +1270,7 @@
         &           + topt_)) /( (25.d0 + 273.d0) * p_R_ * topt_))) * i_ha  &
         &           + i_hd) * jmax25t_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
         &           * (273.d0 + tair_h(th_) - topt_)) / ( (tair_h(th_)      &
-        &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd) * lai_lt(ii) 
+        &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd)  
 
 !       * (3.24), (Out[312]), leaf respiration trees
          rlt_h(:,ii) = ((ca_h(th_) - gammastar) * jmaxt_h(:,ii)         &
@@ -1295,7 +1295,7 @@
         &           + topt_)) /( (25.d0 + 273.d0) * p_R_ * topt_))) * i_ha  &
         &           + i_hd) * jmax25g_d(:)) / ((-1.d0 + p_E ** ((i_hd     &
         &           * (273.d0 + tair_h(th_) - topt_)) / ( (tair_h(th_)      &
-        &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd) * lai_lg(ii) 
+        &           + 273.d0) * p_R_ * topt_))) * i_ha + i_hd)  
 
 !       * respiration grasses
          rlg_h(:,ii) = ((ca_h(th_) - gammastar)  * jmaxg_h(:,ii)    &
