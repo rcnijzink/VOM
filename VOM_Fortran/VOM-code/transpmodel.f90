@@ -144,7 +144,7 @@
         call vom_add_daily()
         call vom_write_hourly(fyear(nday), fmonth(nday), fday(nday), nday, nhour, th_,          &
              &    rain_h(th_), tair_h(th_), par_h(th_), vd_h(th_), esoil_h,    &
-             &    Ma_lt*o_cait + Ma_lg*caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
+             &    fpar_lt*o_cait + fpar_lg*caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
              &    rlt_h(2,2) + rlg_h(2,2), lambdat_d, lambdag_d, rrt_d + rrg_d,  &
              &    asst_h(2,2), assg_h(2,2,2), etmt_h, etmg_h, su__(1), zw_, wsnew, &
              &    spgfcf_h, infx_h, ruptkt_h, su__, i_write_nc)
@@ -213,7 +213,7 @@
 
         call vom_write_day( rain_d(nday), tairmax_d(nday), tairmin_d(nday), par_d(nday),   &
              &  vd_d / 24.d0, esoil_d, jmax25t_d(2), jmax25g_d(2),             &
-             &  Ma_lt*o_cait + Ma_lg*caig_d(2), rlt_d , rlg_d, lambdat_d, lambdag_d,         &
+             &  fpar_lt*o_cait + fpar_lg*caig_d(2), rlt_d , rlg_d, lambdat_d, lambdag_d,         &
              &  rrt_d * 3600.d0 * 24.d0, rrg_d * 3600.d0 * 24.d0, asst_d(2,2), &
              &  assg_d(2,2,2), SUM(su__(1:wlayer_)) / wlayer_, zw_, wsnew,     &
              &  spgfcf_d, infx_d, etmt_d, etmg_d, su__(1), topt_,              &
@@ -1252,10 +1252,10 @@
 !     ---trees--
       select case(i_lai_function)
       case(1)
-        Ma_lt(:) = 1.0d0
+        fpar_lt(:) = 1.0d0
       case(2)
 !       * fraction of absorbed radiation per crown area (Beer-lambert)
-        Ma_lt(:) = 1.0d0 - p_E ** (-lai_lt(:) * i_extcoefft )
+        fpar_lt(:) = 1.0d0 - p_E ** (-lai_lt(:) * i_extcoefft )
       end select
 
 !     * (Out[274], derived from (3.25))
@@ -1281,10 +1281,10 @@
 !     ---grasses--
       select case(i_lai_function)
       case(1)
-        Ma_lg(:) = 1.0d0
+        fpar_lg(:) = 1.0d0
       case(2)
 !       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
-        Ma_lg(:) = 1.0d0 - p_E ** (-lai_lg(:) * i_extcoeffg)
+        fpar_lg(:) = 1.0d0 - p_E ** (-lai_lg(:) * i_extcoeffg)
       end select
 
      do ii = 1,3 !loop for LAI-values
@@ -1360,10 +1360,10 @@
 
          select case(i_lai_function) !for back-compatability, needs to be checked
          case(1)
-           jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lt(ii) )           &    
+           jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * fpar_lt(ii) )           &    
         &             / jmaxt_h(:,ii))) * jmaxt_h(:,ii) ! (3.23), (Out[311])
          case(2)
-           jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lt(ii)  )           &    
+           jactt(:,ii)   = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * fpar_lt(ii)  )           &    
         &             / jmaxt_h(:,ii))) * jmaxt_h(:,ii) ! (3.23), (Out[311])
          end select
 
@@ -1374,10 +1374,10 @@
 
          select case(i_lai_function) !for back-compatability, needs to be checked
          case(1)
-           jactg(:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lg(ii)   )           &
+           jactg(:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * fpar_lg(ii)   )           &
      &             / jmaxg_h(:,ii) )) * jmaxg_h(:,ii)   ! (3.23), (Out[311])
          case(2)
-           jactg(:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * Ma_lg(ii)   )           &
+           jactg(:,ii) = (1.d0 - p_E ** (-(i_alpha * par_h(th_) * fpar_lg(ii)   )           &
      &             / jmaxg_h(:,ii) )) * jmaxg_h(:,ii)   ! (3.23), (Out[311])
          end select
            

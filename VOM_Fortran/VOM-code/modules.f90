@@ -340,8 +340,8 @@
       REAL*8  :: caig_d(3)              ! Crown area index seasonal vegetation (caig_d(2) is actual value)
       REAL*8  :: c_caigmin              ! Minimum grass crown area index; initial point for growth (-)
 
-      REAL*8 :: Ma_lg(3)                !local fraction of absorbed radiation grasses (-)
-      REAL*8 :: Ma_lt(3)                !local fraction of absorbed radiation trees (-)
+      REAL*8 :: fpar_lg(3)                !local fraction of absorbed radiation grasses (-)
+      REAL*8 :: fpar_lt(3)                !local fraction of absorbed radiation trees (-)
 
 !     * leaf
 
@@ -520,7 +520,7 @@
       INTEGER :: c_maxday               ! Number of days to process (d)
 
       !$OMP threadprivate( time, error, finish, nyear, nday, nhour, th_, c_testday,   & 
-      !$OMP topt_, par_y, srad_y,   &
+      !$OMP topt_, par_y, srad_y, fpar_lt, fpar_lg,   &
       !$OMP vd_d, vd_y, rain_y, gammastar, wsnew, wsold, o_cait, caig_d, c_caigmin, &
       !$OMP o_wstexp, o_wsgexp, o_lambdatf, o_lambdagf, lambdat_d, lambdag_d, gstomt, gstomg, &
       !$OMP rlt_h, rlt_d, rlt_y, rlg_h, rlg_d, rlg_y, transpt, transpg, q_tct_d, tct_y, tcg_d, &

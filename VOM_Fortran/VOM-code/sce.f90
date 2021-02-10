@@ -821,7 +821,7 @@ end if
       !$OMP parallel default(shared) &
       !$OMP private( m_, first, msg, writeformat) &
       !$OMP COPYIN( time, error, finish, nyear, nday, nhour, th_, c_testday,   & 
-      !$OMP topt_, par_y, srad_y,  vd_d, vd_y, &
+      !$OMP topt_, par_y, srad_y,  vd_d, vd_y, fpar_lt, fpar_lg, &
       !$OMP rain_y, gammastar, wsnew, wsold, o_cait, caig_d, c_caigmin, &
       !$OMP o_wstexp, o_wsgexp, o_lambdatf, o_lambdagf, &
       !$OMP i_cz, i_cgs, i_zr, i_go, i_ksat, i_thetar, i_thetas, i_nvg, i_avg, &
