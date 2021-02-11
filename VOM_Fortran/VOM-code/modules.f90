@@ -340,8 +340,8 @@
       REAL*8  :: caig_d(3)              ! Crown area index seasonal vegetation (caig_d(2) is actual value)
       REAL*8  :: c_caigmin              ! Minimum grass crown area index; initial point for growth (-)
 
-      REAL*8 :: Ma_lg(3)                !local fraction of absorbed radiation grasses (-)
-      REAL*8 :: Ma_lt(3)                !local fraction of absorbed radiation trees (-)
+      REAL*8 :: fpar_lg(3)                !local fraction of absorbed radiation grasses (-)
+      REAL*8 :: fpar_lt(3)                !local fraction of absorbed radiation trees (-)
 
 !     * leaf
 
@@ -530,6 +530,7 @@
       !$OMP etmg_d, etmg_y, etm_y, mqt_, mqtnew, mqtold, dmqt, q_mqx, mqsst_, mqsstmin, q_md, &
       !$OMP o_mdstore, o_rtdepth, o_rgdepth, pos_slt, pos_slg, pos_ult, pos_ulg, changef, &
       !$OMP rootlim, posmna, &
+      !$OMP fpar_lt, fpar_lg, lai_lg, lai_lt,&
       !$OMP ruptkt__, rsurft_, rsurftnew, prootm, ruptkt_d, ruptkt_h, ruptkg_h, ruptkg_d, &
       !$OMP refft, reffg, ruptkg__, rsurfg_, rsurfgnew, rsoil,      &  
       !$OMP rrt_d, rrt_y, rrg_d, rrg_y, sumruptkt_h, output_mat)
