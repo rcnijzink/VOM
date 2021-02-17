@@ -508,7 +508,7 @@
      &                    i_prootmg, i_growthmax, i_incrcovg,          &
      &                    i_incrjmax, i_jmax_ini,                      &
      &                    i_incrlait, i_incrlaig,                      &
-     &                    i_extcoeffg, i_extcoefft, i_trans_vegcov,    &
+     &                    i_chi_t, i_chi_g,i_alpha_abs, i_trans_vegcov,&
      &                    i_firstyear,i_lastyear, i_write_h,           &
      &                    i_read_pc, i_write_nc,                       &
      &                    i_lai_function,  i_no_veg,                   &
@@ -1347,6 +1347,7 @@
       REAL*8 :: cond3(3)
       REAL*8 :: part1, part2, part3, part4, part5
       REAL*8 :: part6, part7, part8, part9
+      REAL*8 :: kappa
       INTEGER:: ii
 
 
@@ -1360,7 +1361,8 @@
         fpar_lt(:) = 1.0d0
       case(2)
 !       * fraction of absorbed radiation per crown area (Beer-lambert)
-        fpar_lt(:) = 1.0d0 - p_E ** (-lai_lt(:) * i_extcoefft )
+        kappa = sqrt(i_chi_t**2+tan(phi_zenith(th_))**2)/(i_chi_t+1.774*(i_chi_t+1.182)**(-0.733) ) 
+        fpar_lt(:) = 1.0d0 - p_E ** (-lai_lt(:) * kappa * sqrt(i_alpha_abs) )
       end select
 
 !       * calculate electron transport capacity trees
@@ -1374,7 +1376,8 @@
         fpar_lg(:) = 1.0d0
       case(2)
 !       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
-        fpar_lg(:) = 1.0d0 - p_E ** (-lai_lg(:) * i_extcoeffg)
+        kappa = sqrt(i_chi_g**2+tan(phi_zenith(th_))**2)/(i_chi_g+1.774*(i_chi_g+1.182)**(-0.733) ) 
+        fpar_lg(:) = 1.0d0 - p_E ** (-lai_lg(:) * kappa * sqrt(i_alpha_abs) )
       end select
 
 

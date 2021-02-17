@@ -500,8 +500,9 @@
       REAL*8  :: i_jmax_ini             ! parameter determining the start value of jmax25 (mol/m2/s)
       REAL*8  :: i_incrlait             ! parameter determining maximum increment percentage of lai trees (-)
       REAL*8  :: i_incrlaig             ! parameter determining maximum increment percentage of lai grasses
-      REAL*8  :: i_extcoeffg            ! extinction coefficient beer's law grasses (-)
-      REAL*8  :: i_extcoefft            ! extinction coefficient beer's law trees (-)
+      REAL*8  :: i_chi_g                ! ratio projected areas of canopy elements on horizontal and vertical surfaces (-)
+      REAL*8  :: i_chi_t                ! ratio projected areas of canopy elements on horizontal and vertical surfaces (-)
+      REAL*8  :: i_alpha_abs                ! ratio projected areas of canopy elements on horizontal and vertical surfaces (-)
       REAL*8  :: i_trans_vegcov         ! fraction of radiative energy reaching soil under full cover (0-1) (-)
 
       INTEGER :: i_firstyear            ! First year for the generation of hourly output in computation mode
