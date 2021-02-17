@@ -621,6 +621,7 @@
       allocate(press_h(c_maxhour))
       allocate(vp_h(c_maxhour))
 
+      allocate(phi_zenith(c_maxhour))
       allocate(par_d(c_maxday))
 
       allocate(s_delz(s_maxlayer))
@@ -903,8 +904,15 @@
       INTEGER :: in1, in2
       REAL*8  :: sunr, suns
       REAL*8  :: tairmean
+      REAL*8  :: delta                  ! solar declination
       REAL*8  :: dtair
       REAL*8  :: daylength              ! Day length (hours)
+      REAL*8  :: standard_meridian      ! standard_meridian
+      REAL*8  :: f                      ! factor in calculation of solar time
+      REAL*8  :: to                     ! time of solar noon
+      REAL*8  :: LC                     ! longitude correction time of solar noon
+      REAL*8  :: ET                     ! time correction time of solar noon
+
       REAL*8  :: vp__                   ! Absolute vapour pressure in the air (Pa)
 
         in1 = 1
@@ -941,6 +949,27 @@
      &               * COS(0.822d0 - ((-1.d0 + ik) * p_pi) / 4.d0) + 0.0984d0 &
      &               * COS(0.360d0 - ((-1.d0 + ik) * p_pi) / 6.d0) + 0.4632d0 &
      &               * COS(3.805d0 - ((-1.d0 + ik) * p_pi) / 12.d0))
+          dayyear(in) = 181
+          i_lat = 46.77
+          i_lon = 117.2
+
+!         solar declination (Campbell and Norman, 1998, Eq.11.2)
+          delta = ASIN(0.39785*SIN( p_pi*(278.97+0.9856*dayyear(in)+1.9165*SIN( p_pi*(356.6+0.9856*dayyear(in))/180))/180) )
+
+!         longitude correction  time of solar noon, in hours 
+          standard_meridian = NINT(i_lon/15.d0)*15.d0
+          LC = (standard_meridian-i_lon)/15d0  
+
+!         equation of time correction, in hours (Campbell and Norman, 1998, Eq.11.4)
+          f = p_pi*(279.575+0.98565*dayyear(in))/180d0
+          ET = (-104.7*SIN(f)+596.2*SIN(2*f)+4.3*SIN(3*f)-12.7*SIN(4*f)       &
+                -429.3*COS(f)-2.0*COS(2*f)+19.3*COS(3*f)) /3600 !equation of time
+
+!         time of solar noon (Campbell and Norman, 1998, Eq.11.2)
+          to = 12d0 - LC - ET
+
+!         calculate the zenith angle of the sun (Campbell and Norman, 1998, Eq.11.1)
+          phi_zenith(ii) = ACOS(SIN(p_pi*i_lat/180d0)*SIN(delta) + COS(p_pi*i_lat/180d0)*COS(delta)*COS(p_pi*15.d0*(ik-to)/180d0))
 
           ca_h(ii) = ca_d(in) / 1.0d6
           press_h(ii) = press_d(in)

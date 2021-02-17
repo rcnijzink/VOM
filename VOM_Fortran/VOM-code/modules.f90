@@ -297,6 +297,8 @@
 
 !     * climate
 
+      REAL*8, ALLOCATABLE :: phi_zenith(:)  ! zenith angle
+
       REAL*8, ALLOCATABLE :: tair_h(:)    ! Hourly air temperature (K)
       REAL*8, ALLOCATABLE :: tairmin_d(:) ! Daily minimum temperature (K)
       REAL*8, ALLOCATABLE :: tairmax_d(:) ! Daily maximum temperature (K)
