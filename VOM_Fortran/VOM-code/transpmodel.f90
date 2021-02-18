@@ -1751,7 +1751,7 @@
         io_h        = io_h        + dt_ * io__
         esoil_h     = esoil_h     + dt_ * esoil__
         etmt_h      = etmt_h      + dt_ * etmt__ * o_cait
-        etmg_h      = etmg_h      + dt_ * etmg__(2,2) * caig_d(ii)
+        etmg_h      = etmg_h      + dt_ * etmg__(2,2) * caig_d(2)
         sumruptkt_h = sumruptkt_h + dt_ * SUM(ruptkt__(:))
       endif
 
