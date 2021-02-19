@@ -126,9 +126,9 @@
 !     * rl does not need to be included here as ass=-rl if j=0 (at night)
       tp_netass = tp_netass + asst_h(2,2) - 3600.d0 * (q_cpcct_d + rrt_d &
      &          + q_tct_d(2) ) + assg_h(2,2,2) - 3600.d0 * (cpccg_d(2)       &
-     &          + rrg_d + tcg_d(2,2))
+     &          + rrg_d(2) + tcg_d(2,2))
       tp_netassg_d = tp_netassg_d + assg_h(2,2,2) - 3600.d0 * (cpccg_d(2)       &
-     &          + rrg_d + tcg_d(2,2))
+     &          + rrg_d(2) + tcg_d(2,2))
       tp_netasst_d = tp_netasst_d + asst_h(2,2) - 3600.d0 * (q_cpcct_d + rrt_d &
      &          + q_tct_d(2) ) 
 
@@ -145,7 +145,7 @@
         call vom_write_hourly(fyear(nday), fmonth(nday), fday(nday), nday, nhour, th_,          &
              &    rain_h(th_), tair_h(th_), par_h(th_), vd_h(th_), esoil_h,    &
              &    fpar_lt*o_cait + fpar_lg*caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
-             &    rlt_h(2) + rlg_h(2), lambdat_d, lambdag_d, rrt_d + rrg_d,  &
+             &    rlt_h(2) + rlg_h(2), lambdat_d, lambdag_d, rrt_d + rrg_d(2),  &
              &    asst_h(2,2), assg_h(2,2,2), etmt_h, etmg_h, su__(1), zw_, wsnew, &
              &    spgfcf_h, infx_h, ruptkt_h, su__, i_write_nc)
 
@@ -214,7 +214,7 @@
         call vom_write_day( rain_d(nday), tairmax_d(nday), tairmin_d(nday), par_d(nday),   &
              &  vd_d / 24.d0, esoil_d, jmax25t_d(2), jmax25g_d(2),             &
              &  fpar_lt*o_cait + fpar_lg*caig_d(2), rlt_d , rlg_d, lambdat_d, lambdag_d,         &
-             &  rrt_d * 3600.d0 * 24.d0, rrg_d * 3600.d0 * 24.d0, asst_d(2,2), &
+             &  rrt_d * 3600.d0 * 24.d0, rrg_d(2) * 3600.d0 * 24.d0, asst_d(2,2), &
              &  assg_d(2,2,2), SUM(su__(1:wlayer_)) / wlayer_, zw_, wsnew,     &
              &  spgfcf_d, infx_d, etmt_d, etmg_d, su__(1), topt_,              &
              & tcg_d(2,2), q_tct_d(2), cpccg_d(2), q_cpcct_d,                  &
@@ -1221,7 +1221,7 @@
 
 
 !     * (3.40), (Out[190])  root respiration [mol/s]
-      rrt_d        = 2.55d-7 * SUM(rsurft_(1:pos_slt))
+      rrt_d        = 2.55d-7 * SUM(rsurft_(1:pos_slt)) * o_cait
 
 
 !     * (3.42, 2.45e-10 from (Out[165])) costs of water distribution and storage
@@ -1230,7 +1230,7 @@
 
 
 !     * (3.40), (Out[190]) root respiration grasses [mol/s]
-      rrg_d = 2.55d-7 * SUM(rsurfg_(1:pos_slg))
+      rrg_d(:) = 2.55d-7 * SUM(rsurfg_(1:pos_slg)) * caig_d(:)
 !     * resetting the minimum steady-state tissue water content to
 !       its maximum value
       mqsstmin = q_mqx
@@ -1871,7 +1871,7 @@
        output_mat(9, nday) = rrt_d * 3600.d0 * 24.d0
 
        ! Grass root respiration rate
-       output_mat(10, nday) = rrg_d * 3600.d0 * 24.d0
+       output_mat(10, nday) = rrg_d(2) * 3600.d0 * 24.d0
 
        ! Daily tree assimilation
        output_mat(11, nday) = asst_d(2,2)
@@ -1999,7 +1999,7 @@
         etmg_y   = etmg_y  + etmg_d * 1000.d0 ! in [mm]
         assg_y   = assg_y  + assg_d(2,2,2)
         rlg_y    = rlg_y   + rlg_d
-        rrg_y    = rrg_y   + rrg_d      * 3600.d0 * 24.d0
+        rrg_y    = rrg_y   + rrg_d(2)   * 3600.d0 * 24.d0
         cpccg_y  = cpccg_y + cpccg_d(2) * 3600.d0 * 24.d0
         tcg_y    = tcg_y   + tcg_d(2,2)   * 3600.d0 * 24.d0
 !       * for trees
@@ -2021,7 +2021,7 @@
         etmg_y   = etmg_d * 1000.d0
         assg_y   = assg_d(2,2,2)
         rlg_y    = rlg_d
-        rrg_y    = rrg_d      * 3600.d0 * 24.d0
+        rrg_y    = rrg_d(2)   * 3600.d0 * 24.d0
         cpccg_y  = cpccg_d(2) * 3600.d0 * 24.d0
         tcg_y    = tcg_d(2,2)   * 3600.d0 * 24.d0
 !       * for trees
@@ -2081,9 +2081,9 @@
       do ii = 1,3
 
          !3 values of ncp due to different cover (rows in assg_d) and jmax25g (columns in assg_d)
-         netcg_d(1,:) = assg_d(1,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(1) + rrg_d + tcg_d(ii, 1))
-         netcg_d(2,:) = assg_d(2,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(2) + rrg_d + tcg_d(ii, 2))
-         netcg_d(3,:) = assg_d(3,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(3) + rrg_d + tcg_d(ii, 3))
+         netcg_d(1,:) = assg_d(1,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(1) + rrg_d(1) + tcg_d(ii, 1))
+         netcg_d(2,:) = assg_d(2,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(2) + rrg_d(2) + tcg_d(ii, 2))
+         netcg_d(3,:) = assg_d(3,:,ii) - 3600.d0 * 24.d0 * (cpccg_d(3) + rrg_d(3) + tcg_d(ii, 3))
          posbest(:)    = MAXLOC(netcg_d(:,:))
          max_netcg_tmp= netcg_d( posbest(1), posbest(2) )
 
@@ -2151,7 +2151,7 @@
 !     *-----SEASONAL VEGETATION---------------
 
 !     * rootlim is either 0 or 1. Change it to be either -1 or + 1:
-      rootlim(posmna(1),posmna(2)) = 2.d0 * rootlim(posmna(1),posmna(2)) - 1.d0
+      rootlim(posmna(2),posmna(3)) = 2.d0 * rootlim(posmna(2),posmna(3)) - 1.d0
 
       reffg(:) = 0.d0
       maxval_tmp = MAXVAL(ruptkg_d(1:pos_slg) / rsurfg_(1:pos_slg))
@@ -2161,7 +2161,7 @@
 
 !     * if roots are going to be reduced, reverse effectivity vector
 
-      if (rootlim(posmna(1),posmna(2)) .lt. 0.d0) then
+      if (rootlim(posmna(2),posmna(3)) .lt. 0.d0) then
         reffg(:) = 1.d0 - reffg(:)
       endif
 
@@ -2171,7 +2171,7 @@
      &                     * s_delz(1:pos_slg) - rsurft_(1:pos_slg),   &
      &                     MAX(i_rsurfmin * s_delz(1:pos_slg),         &
      &                     rsurfg_(1:pos_slg) + rsurfg_(1:pos_slg)     &
-     &                     * i_growthmax * rootlim(posmna(1),posmna(2))&
+     &                     * i_growthmax * rootlim(posmna(2),posmna(3))&
      &                     * reffg(1:pos_slg)))
       rsurfgnew(pos_slg+1:s_maxlayer) = 0.d0
 
