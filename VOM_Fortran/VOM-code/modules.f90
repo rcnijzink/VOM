@@ -446,7 +446,7 @@
  
       REAL*8              :: rrt_d      ! Tree root respiration rate (mol/m2/s)
       REAL*8              :: rrt_y      ! Annual tree root respiration (mol/m2/y)
-      REAL*8              :: rrg_d(3)   ! Grass root respiration (mol/m2/s)
+      REAL*8              :: rrg_d      ! Grass root respiration (mol/m2/s)
       REAL*8              :: rrg_y      ! Annual grass root respiration (mol/m2/y)
 
       REAL*8, ALLOCATABLE :: prootm(:)  ! Root hydraulic head in each layer (m)
