@@ -503,6 +503,7 @@
 
       namelist /inputpar/ i_alpha, i_cpccf, i_tcf, i_maxyear,          &
      &                    i_testyear, i_ha, i_hd, i_toptf,             &
+     &                    i_heightt, i_heightg,                        &
      &                    i_toptstart, i_rlratio, i_mdtf, i_mqxtf,     &
      &                    i_rrootm, i_rsurfmin, i_rsurf_, i_rootrad,   &
      &                    i_prootmg, i_growthmax, i_incrcovg,          &
@@ -973,8 +974,6 @@
           ca_h(ii) = ca_d(in) / 1.0d6
           press_h(ii) = press_d(in)
 
-!         vd_h(ii) = 0.006028127d0 * 2.718282d0 ** ((17.27d0 * tair_h(ii)) &
-!    &             / (237.3d0 + tair_h(ii))) - 9.869233d-6 * vp__
 !         * (derived from 3.54+3.55) (Out[52]), accounts for diurnal variation in vapour deficit
           vd_h(ii) = (((0.6108d0 * p_E ** (17.27d0 * tair_h(ii)        &
      &             / (tair_h(ii) + 237.3d0))) * 1000) - vp__)          &
@@ -1224,8 +1223,8 @@
 
 
 !     * (3.42, 2.45e-10 from (Out[165])) costs of water distribution and storage
-      q_cpcct_d = i_cpccf * o_cait * o_rtdepth + o_mdstore * 2.45d-10
-      cpccg_d(:) = i_cpccf * caig_d(:) * o_rgdepth  ! (3.42) water transport costs
+      q_cpcct_d = i_cpccf * (o_cait *i_heightt + o_rtdepth * aitot) + o_mdstore * 2.45d-10
+      cpccg_d(:) = i_cpccf * (caig_d(:) * i_heightg + o_rgdepth * aitot )  ! (3.42) water transport costs
 
 
 !     * (3.40), (Out[190]) root respiration grasses [mol/s]

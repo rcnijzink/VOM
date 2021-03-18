@@ -283,7 +283,8 @@
       REAL*8, PARAMETER :: srad2par_h = 2.0699d0  ! Conversion from srad to par hourly (mol/MJ)
       REAL*8, PARAMETER :: srad2par_d = 2.0804d0  ! Conversion from srad to par daily (mol/MJ)
       REAL*8, PARAMETER :: rho_wat = 1000.0d0     ! Density of water (kg/m3)
-
+      REAL*8, PARAMETER :: aitot   = 1.0d0        ! Total area index (-)
+      
       INTEGER :: nyear                  ! Year
       INTEGER :: nday                   ! Day since start of run
       INTEGER :: nhour                  ! Hour of day
@@ -467,6 +468,8 @@
       REAL*8  :: i_alpha                ! Initial slope of electron transport curve (-)
       REAL*8  :: i_cpccf                ! Water transport costs per m root depth and m^2 cover (mol/m^3/s)
       REAL*8  :: i_tcf                  ! Turnover cost factor for foliage (tc=i_tcf*LAI) (mol/m^2/s)
+      REAL*8  :: i_heightt              ! Average tree height (m)
+      REAL*8  :: i_heightg              ! Average grass height (m)
       INTEGER :: i_maxyear              ! Number of years to process
       INTEGER :: i_testyear             ! Number of years after which to perform initial test of netass
       REAL*8  :: i_ha                   ! Temperature response parameter (J/mol)
