@@ -611,7 +611,8 @@
 
      subroutine vom_write_day ( rain, tairmax, tairmin, par,   &
              &  vd, esoil, jmax25t, jmax25g,             &
-             &  pc, rlt , rlg, lambdat, lambdag,         &
+             &  pc, fpart, fparg, caig,    &
+             & rlt , rlg, lambdat, lambdag,         &
              &  rrt, rrg , asst, &
              &  assg, su_avg, zw, ws,     &
              &  spgfcf, infx, etmt, etmg, su_1, topt,              &
@@ -632,6 +633,9 @@
       REAL*8,  INTENT(in) :: jmax25t
       REAL*8,  INTENT(in) :: jmax25g
       REAL*8,  INTENT(in) :: pc
+      REAL*8,  INTENT(in) :: fpart
+      REAL*8,  INTENT(in) :: fparg
+      REAL*8,  INTENT(in) :: caig
       REAL*8,  INTENT(in) :: rlt
       REAL*8,  INTENT(in) :: rlg
       REAL*8,  INTENT(in) :: lambdat
@@ -731,11 +735,12 @@
 !     * includes a column for each sublayer
       dailyformat = '(I6,I6,I4,I7,'//str//'E14.6)'
 
-      write(kfile_resultsdaily,'(I6,I7,I7,I7,I7,34E15.5)')             &
+      write(kfile_resultsdaily,'(I6,I7,I7,I7,I7,37E15.5)')             &
      &  fyear(nday), fmonth(nday), fday(nday), nday, nhour-1,          &
      &  rain, tairmax, tairmin, par,   &
      &  vd, esoil, jmax25t, jmax25g,             &
-     &  pc, rlt , rlg, lambdat, lambdag,         &
+     &  pc, fpart, fparg, caig,    &
+     &  rlt , rlg, lambdat, lambdag,         &
      &  rrt, rrg, asst, &
      &  assg, su_avg, zw, ws,     &
      &  spgfcf, infx, etmt, etmg, su_1, topt,              &

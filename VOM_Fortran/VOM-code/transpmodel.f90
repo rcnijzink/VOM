@@ -213,7 +213,9 @@
 
         call vom_write_day( rain_d(nday), tairmax_d(nday), tairmin_d(nday), par_d(nday),   &
              &  vd_d / 24.d0, esoil_d, jmax25t_d(2), jmax25g_d(2),             &
-             &  fpar_lt*o_cait + fpar_lg*caig_d(2), rlt_d , rlg_d, lambdat_d, lambdag_d,         &
+             &  fpar_lt*o_cait + fpar_lg*caig_d(2),                            &
+             &  fpar_lt, fpar_lg, caig_d(2),                                   &
+             &  rlt_d , rlg_d, lambdat_d, lambdag_d,                           &
              &  rrt_d * 3600.d0 * 24.d0, rrg_d * 3600.d0 * 24.d0, asst_d(2,2), &
              &  assg_d(2,2,2), SUM(su__(1:wlayer_)) / wlayer_, zw_, wsnew,     &
              &  spgfcf_d, infx_d, etmt_d, etmg_d, su__(1), topt_,              &
