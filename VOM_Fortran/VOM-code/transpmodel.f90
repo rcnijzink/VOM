@@ -952,7 +952,6 @@
      &               * COS(0.822d0 - ((-1.d0 + ik) * p_pi) / 4.d0) + 0.0984d0 &
      &               * COS(0.360d0 - ((-1.d0 + ik) * p_pi) / 6.d0) + 0.4632d0 &
      &               * COS(3.805d0 - ((-1.d0 + ik) * p_pi) / 12.d0))
-          dayyear(in) = 181
 
 
 !         solar declination (Campbell and Norman, 1998, Eq.11.2)
