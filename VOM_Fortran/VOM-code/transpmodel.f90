@@ -144,7 +144,7 @@
         call vom_add_daily()
         call vom_write_hourly(fyear(nday), fmonth(nday), fday(nday), nday, nhour, th_,          &
              &    rain_h(th_), tair_h(th_), par_h(th_), vd_h(th_), esoil_h,    &
-             &    fpar_lt*o_cait + fpar_lg*caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
+             &    fpar_lt(2)*o_cait + fpar_lg(2)*caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
              &    rlt_h(2) + rlg_h(2), lambdat_d, lambdag_d, rrt_d + rrg_d,  &
              &    asst_h(2,2), assg_h(2,2,2), etmt_h, etmg_h, su__(1), zw_, wsnew, &
              &    spgfcf_h, infx_h, ruptkt_h, su__, i_write_nc)
@@ -213,8 +213,8 @@
 
         call vom_write_day( rain_d(nday), tairmax_d(nday), tairmin_d(nday), par_d(nday),   &
              &  vd_d / 24.d0, esoil_d, jmax25t_d(2), jmax25g_d(2),             &
-             &  fpar_lt*o_cait + fpar_lg*caig_d(2),                            &
-             &  fpar_lt, fpar_lg, caig_d(2),                                   &
+             &  fpard_lt*o_cait + fpard_lg*caig_d(2),                            &
+             &  fpard_lt, fpar_lg, caig_d(2),                                   &
              &  rlt_d , rlg_d, lambdat_d, lambdag_d,                           &
              &  rrt_d * 3600.d0 * 24.d0, rrg_d * 3600.d0 * 24.d0, asst_d(2,2), &
              &  assg_d(2,2,2), SUM(su__(1:wlayer_)) / wlayer_, zw_, wsnew,     &
@@ -1255,6 +1255,9 @@
         rlg_d    = 0.d0
       endif
 
+      fpard_lg = 0.d0
+      fpard_lt = 0.d0
+      
       return
       end subroutine vom_daily_init
 
@@ -1330,7 +1333,7 @@
       assg_h(:,:,:) = 0.d0
       ruptkt_h(:) = 0.d0
       ruptkg_h(:) = 0.d0
-
+      
       return
       end subroutine vom_hourly_init
 
@@ -1774,7 +1777,9 @@
       infx_d   = infx_d   + infx_h
       rlt_d    = rlt_d    + rlt_h(2)   * 3600.d0  ! rlt_d in mol/day
       rlg_d    = rlg_d    + rlg_h(2) * 3600.d0
-
+      fpard_lg = fpard_lg + fpar_lg(2) / 24d0 !mean fpar per day
+      fpard_lt = fpard_lt + fpar_lt(2) / 24d0 !mean fpar per day
+      
       return
       end subroutine vom_add_daily
 

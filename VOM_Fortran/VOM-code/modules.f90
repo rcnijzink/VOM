@@ -346,6 +346,9 @@
       REAL*8 :: fpar_lg(3)                !local fraction of absorbed radiation grasses (-)
       REAL*8 :: fpar_lt(3)                !local fraction of absorbed radiation trees (-)
 
+      REAL*8 :: fpard_lg                !mean local fraction of absorbed radiation grasses per day (-)
+      REAL*8 :: fpard_lt                !mean local fraction of absorbed radiation trees pea day (-)
+      
 !     * leaf
 
       REAL*8  :: o_wstexp               ! Exponent for calculating lambdat_d (-)
