@@ -953,7 +953,11 @@
      &               * COS(0.360d0 - ((-1.d0 + ik) * p_pi) / 6.d0) + 0.4632d0 &
      &               * COS(3.805d0 - ((-1.d0 + ik) * p_pi) / 12.d0))
 
+          dayyear(in) = 181
+          i_lon = 117.2
+          i_lat = 46.77
 
+          
 !         solar declination (Campbell and Norman, 1998, Eq.11.2)
           delta = ASIN(0.39785*SIN( p_pi*(278.97+0.9856*dayyear(in)+1.9165*SIN( p_pi*(356.6+0.9856*dayyear(in))/180))/180) )
 
@@ -968,6 +972,7 @@
 
 !         time of solar noon (Campbell and Norman, 1998, Eq.11.2)
           to = 12d0 - LC - ET
+          
 
 !         calculate the zenith angle of the sun (Campbell and Norman, 1998, Eq.11.1)
           phi_zenith(ii) = ACOS(SIN(p_pi*i_lat/180d0)*SIN(delta) + COS(p_pi*i_lat/180d0)*COS(delta)*COS(p_pi*15.d0*(ik-to)/180d0))
@@ -1451,6 +1456,9 @@
         jactg(:,:)  = 0.d0
         gstomg(:,:) = 0.d0
         etmg__(:,:) = 0.d0
+        fpar_lg(:) = 0.d0
+        fpar_lt(:) = 0.d0
+        
       endif
 
 
