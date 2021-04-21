@@ -1186,11 +1186,11 @@
 
 !     * adjust lai-values trees
       lai_lt(:) = lai_lt(2) * (/1.0d0-i_incrlait,1.0d0,1.0d0+i_incrlait/)
-      lai_lt(:) = MAX( lai_lt(:), 0.1d0 ) !minimum value, else lai doesn't pick up anymore
+      lai_lt(3) = MAX( lai_lt(3), 0.2d0 ) !minimum value, else lai doesn't pick up anymore
 
 !     * adjust lai-values grasses
       lai_lg(:) = lai_lg(2) * (/1.0d0-i_incrlaig,1.0d0,1.0d0+i_incrlaig/) 
-      lai_lg(:) = MAX( lai_lg(:), 0.1d0 ) !minimum value, else lai doesn't pick up anymore
+      lai_lg(3) = MAX( lai_lg(3), 0.2d0 ) !minimum value, else lai doesn't pick up anymore
 
       if( i_read_pc == 1) then   
          caig_d(:) = perc_cov_veg(nday)  
