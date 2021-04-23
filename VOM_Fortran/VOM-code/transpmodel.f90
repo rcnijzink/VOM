@@ -1040,6 +1040,22 @@
 
       topt_ = i_toptstart
 
+
+
+!     * Check parameters for unfeasible combinations
+
+      if ( ( (o_cait .lt. 0.05)    .and. (o_rtdepth .gt. 0.05)  ) .or. &
+           ( (o_rtdepth .lt. 0.05) .and. (o_cait .gt. 0.05   )  ) ) then
+      
+         write(*,*) 'o_cait and/or o_rtdepth below threshold'
+         write(*,*) 'Setting parameters perennial trees to 0.0'
+         o_cait = 0.0
+         o_rtdepth = 0.0
+         o_lambdatf = 0.0
+         o_wstexp = 0.0
+      end if
+
+
 !     * Set soil moisture and vegetation parameters to initial conditions
 
       call waterbalance_init()
