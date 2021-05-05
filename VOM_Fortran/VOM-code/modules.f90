@@ -469,7 +469,8 @@
 !     ****************************
 
       REAL*8  :: i_alpha                ! Initial slope of electron transport curve (-)
-      REAL*8  :: i_cpccf                ! Water transport costs per m root depth and m^2 cover (mol/m^3/s)
+      REAL*8  :: i_cpccft               ! Water transport costs trees per m root depth and m^2 cover (mol/m^3/s)
+      REAL*8  :: i_cpccfg               ! Water transport costs grasses per m root depth and m^2 cover (mol/m^3/s)
       REAL*8  :: i_tcf                  ! Turnover cost factor for foliage (tc=i_tcf*LAI) (mol/m^2/s)
       REAL*8  :: i_heightt              ! Average tree height (m)
       REAL*8  :: i_heightg              ! Average grass height (m)

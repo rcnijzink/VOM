@@ -503,7 +503,7 @@
 
 !     * Definition of variable parameters
 
-      namelist /inputpar/ i_alpha, i_cpccf, i_tcf, i_maxyear,          &
+      namelist /inputpar/ i_alpha, i_cpccft, i_cpccft, i_tcf, i_maxyear,          &
      &                    i_testyear, i_ha, i_hd, i_toptf,             &
      &                    i_heightt, i_heightg,                        &
      &                    i_toptstart, i_rlratio, i_mdtf, i_mqxtf,     &
@@ -1042,20 +1042,6 @@
 
 
 
-!     * Check parameters for unfeasible combinations
-
-      if ( ( (o_cait .lt. 0.05)    .and. (o_rtdepth .gt. 0.05)  ) .or. &
-           ( (o_rtdepth .lt. 0.05) .and. (o_cait .gt. 0.05   )  ) ) then
-      
-         write(*,*) 'o_cait and/or o_rtdepth below threshold'
-         write(*,*) 'Setting parameters perennial trees to 0.0'
-         o_cait = 0.0
-         o_rtdepth = 0.0
-         o_lambdatf = 0.0
-         o_wstexp = 0.0
-      end if
-
-
 !     * Set soil moisture and vegetation parameters to initial conditions
 
       call waterbalance_init()
@@ -1077,6 +1063,21 @@
       rsurftnew(:) = 0.d0
       lai_lt(:) = 2.5d0 * (/1.0d0-i_incrlait,1.0d0,1.0d0+i_incrlait/)
       lai_lg(:) = 2.5d0 * (/1.0d0-i_incrlaig,1.0d0,1.0d0+i_incrlaig/)
+
+!     * Check parameters for unfeasible combinations
+
+      if ( ( (o_cait .lt. 0.05)    .and. (o_rtdepth .gt. 0.05)  ) .or. &
+           ( (o_rtdepth .lt. 0.05) .and. (o_cait .gt. 0.05   )  ) ) then
+      
+         write(*,*) 'o_cait and/or o_rtdepth below threshold'
+         write(*,*) 'Setting parameters perennial trees to 0.0'
+         o_cait = 0.0
+         o_rtdepth = 0.0
+         o_lambdatf = 0.0
+         o_wstexp = 0.0
+         lai_lt(:) = 0.0
+      end if
+
 
 !     * Determining the position of the bottom of the tree root zone
 
@@ -1245,8 +1246,8 @@
 
 
 !     * (3.42, 2.45e-10 from (Out[165])) costs of water distribution and storage
-      q_cpcct_d = i_cpccf * (o_cait *i_heightt + o_rtdepth * aitot) + o_mdstore * 2.45d-10
-      cpccg_d(:) = i_cpccf * (caig_d(:) * i_heightg + o_rgdepth * aitot )  ! (3.42) water transport costs
+      q_cpcct_d = i_cpccft * (o_cait *i_heightt + o_rtdepth * aitot) + o_mdstore * 2.45d-10
+      cpccg_d(:) = i_cpccfg * (caig_d(:) * i_heightg + o_rgdepth * aitot )  ! (3.42) water transport costs
 
 
 !     * (3.40), (Out[190]) root respiration grasses [mol/s]
@@ -1495,7 +1496,7 @@
         rsurft_(wlayernew+1:pos_slt) = i_rsurfmin * s_delz(wlayernew+1:pos_slt)
       endif
       if (wlayernew .lt. pos_slg) then
-        rsurfg_(wlayernew+1:pos_slg) = i_rsurfmin * s_delz(wlayernew+1:pos_slt)
+        rsurfg_(wlayernew+1:pos_slg) = i_rsurfmin * s_delz(wlayernew+1:pos_slg)
       endif
 
       mqt_       = mqtnew
