@@ -503,7 +503,7 @@
 
 !     * Definition of variable parameters
 
-      namelist /inputpar/ i_alpha, i_cpccft, i_cpccft, i_tcf, i_maxyear,          &
+      namelist /inputpar/ i_alpha, i_cpccfg, i_cpccft, i_tcf, i_maxyear,          &
      &                    i_testyear, i_ha, i_hd, i_toptf,             &
      &                    i_heightt, i_heightg,                        &
      &                    i_toptstart, i_rlratio, i_mdtf, i_mqxtf,     &
