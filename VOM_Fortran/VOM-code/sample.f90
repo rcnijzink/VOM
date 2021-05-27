@@ -45,10 +45,10 @@ use vom_vegwat_mod
       implicit none
 
 
-      real*8,dimension(6)              :: r        !random values
+      real*8,allocatable               :: r(:)        !random values
       integer                          :: n        !number of iterations
-      real*8,dimension(6)              :: paramset !random parameterset
-      real*8,dimension(6)              :: param_sample !random parameterset      
+      real*8,allocatable               :: paramset(:) !random parameterset
+      real*8,allocatable               :: param_sample(:) !random parameterset      
       integer                          :: i_loop   !current loop
       integer                          :: ii       !counter
       integer                          :: jj       !counter      
@@ -77,6 +77,8 @@ use vom_vegwat_mod
                              su1_out, &
                              topt_out
 
+
+
       open(kfile_outputlist, FILE=sfile_outputlist, STATUS='old',          &
      &                     FORM='formatted', IOSTAT=iostat)
       if (iostat .eq. 0) then
@@ -99,9 +101,9 @@ use vom_vegwat_mod
       open(kfile_random_output, FILE=trim(adjustl(i_outputpath)) // trim(adjustl(sfile_random_output)))
       open(kfile_random_params, FILE=trim(adjustl(i_outputpath)) // trim(adjustl(sfile_random_params)))
 
-
      call open_output_randomruns()
 
+      allocate(optid(SUM(paropt(:))))
       !IDs of parameters to sample
       jj = 0
       do ii = 1, vom_npar
@@ -111,7 +113,10 @@ use vom_vegwat_mod
         endif
       enddo
 
-
+      allocate( param_sample( vom_npar ) )
+      allocate( paramset( vom_npar )    )
+      allocate( r( vom_npar )    )
+      
       paramset = parval(:)
       
       !loop for n random samples, needs parallelization
@@ -130,8 +135,6 @@ use vom_vegwat_mod
          !run the model with the random set
 
          call transpmodel(paramset, vom_npar, obj, vom_command)
-
-
 
 
          write(kfile_random_output, *) obj

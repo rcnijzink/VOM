@@ -414,7 +414,7 @@
           allocate(cH2Ol_s(s_maxlayer))
           allocate(iovec(s_maxlayer))
 
-          allocate( output_mat (21, c_testday ) )
+          allocate( output_mat (21, c_maxday ) )
 
       end if
 
