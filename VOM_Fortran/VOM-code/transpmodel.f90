@@ -432,15 +432,17 @@
 !*     Optimised parameters reading from vom_invar
 !*----------------------------------------------------------------------
 
-
+      !vegetation parameters
       if (vom_npar .ge. 1) o_lambdagf = vom_invar(1)
       if (vom_npar .ge. 2) o_wsgexp   = vom_invar(2)
       if (vom_npar .ge. 3) o_lambdatf = vom_invar(3)
       if (vom_npar .ge. 4) o_wstexp   = vom_invar(4)
-      if (vom_npar .ge. 5) o_cait      = vom_invar(5)
+      if (vom_npar .ge. 5) o_cait     = vom_invar(5)
       if (vom_npar .ge. 6) o_rtdepth  = vom_invar(6)
       if (vom_npar .ge. 7) o_mdstore  = vom_invar(7)
       if (vom_npar .ge. 8) o_rgdepth  = vom_invar(8)
+      
+      !soil parameters
       if (vom_npar .ge. 9)  i_cgs     = vom_invar(9)
       if (vom_npar .ge. 10) i_zr      = vom_invar(10)
       if (vom_npar .ge. 11) i_go      = vom_invar(11)
@@ -449,6 +451,14 @@
       if (vom_npar .ge. 14) i_thetas  = vom_invar(14)
       if (vom_npar .ge. 15) i_nvg     = vom_invar(15)
       if (vom_npar .ge. 16) i_avg     = vom_invar(16)
+
+      !cost parameters
+      if (vom_npar .ge. 17) i_cpccft  = vom_invar(17)
+      if (vom_npar .ge. 18) i_cpccfg  = vom_invar(18)
+      if (vom_npar .ge. 19) i_heightt = vom_invar(19)
+      if (vom_npar .ge. 20) i_heightg = vom_invar(20)
+      if (vom_npar .ge. 21) i_tcf     = vom_invar(21)      
+
 
       !set vegetation parameters to 0 if no vegetation
       if (i_no_veg .eq. 1) then

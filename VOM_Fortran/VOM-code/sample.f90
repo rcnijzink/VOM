@@ -48,7 +48,10 @@ use vom_vegwat_mod
       real*8,dimension(6)              :: r        !random values
       integer                          :: n        !number of iterations
       real*8,dimension(6)              :: paramset !random parameterset
+      real*8,dimension(6)              :: param_sample !random parameterset      
       integer                          :: i_loop   !current loop
+      integer                          :: ii       !counter
+      integer                          :: jj       !counter      
       real*8                           :: obj      !objective ncp
       INTEGER                          :: iostat   !input-output status
 
@@ -99,7 +102,18 @@ use vom_vegwat_mod
 
      call open_output_randomruns()
 
+      !IDs of parameters to sample
+      jj = 0
+      do ii = 1, vom_npar
+        if (paropt(ii) .gt. 0) then
+          jj = jj + 1
+          optid(jj) = ii
+        endif
+      enddo
 
+
+      paramset = parval(:)
+      
       !loop for n random samples, needs parallelization
       do i_loop=1, i_iter
 
@@ -109,7 +123,9 @@ use vom_vegwat_mod
          call random_number(r)
 
          !make a random parameterset
-         paramset=r*(parmax-parmin)+parmin
+         param_sample=r*(parmax-parmin)+parmin
+
+         paramset(optid) = param_sample(optid)
 
          !run the model with the random set
 
