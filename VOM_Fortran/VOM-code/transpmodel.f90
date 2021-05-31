@@ -245,7 +245,7 @@
        !formatted output for multiple runs
       !if (optmode .eq. 5) then
       if (option1 .eq. 5) then
-        call vom_save_dayyear() !replace with new routine
+        !call vom_save_dayyear() !replace with new routine
         call vom_add_yearly()
       endif
 
@@ -1901,7 +1901,7 @@
 
        ! Optimal temperature in temperature response curve
        output_mat(21, nday) = topt_
- 
+
 
     !write to file
     if(nday .eq. c_maxday) then
