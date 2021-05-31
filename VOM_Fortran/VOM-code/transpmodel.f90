@@ -448,6 +448,9 @@
       if (vom_npar .ge. 15) i_nvg     = vom_invar(15)
       if (vom_npar .ge. 16) i_avg     = vom_invar(16)
 
+      if (vom_npar .ge. 17) i_cpccf  = vom_invar(17)
+
+      
       !set vegetation parameters to 0 if no vegetation
       if (i_no_veg .eq. 1) then
          o_lambdagf = 0.0

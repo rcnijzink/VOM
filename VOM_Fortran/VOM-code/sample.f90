@@ -45,10 +45,13 @@ use vom_vegwat_mod
       implicit none
 
 
-      real*8,dimension(6)              :: r        !random values
+      real*8,allocatable               :: r(:)        !random values
       integer                          :: n        !number of iterations
-      real*8,dimension(6)              :: paramset !random parameterset
+      real*8,allocatable               :: paramset(:) !random parameterset
+      real*8,allocatable               :: param_sample(:) !random parameterset      
       integer                          :: i_loop   !current loop
+      integer                          :: ii       !counter
+      integer                          :: jj       !counter      
       real*8                           :: obj      !objective ncp
       INTEGER                          :: iostat   !input-output status
 
@@ -74,6 +77,8 @@ use vom_vegwat_mod
                              su1_out, &
                              topt_out
 
+
+
       open(kfile_outputlist, FILE=sfile_outputlist, STATUS='old',          &
      &                     FORM='formatted', IOSTAT=iostat)
       if (iostat .eq. 0) then
@@ -96,10 +101,24 @@ use vom_vegwat_mod
       open(kfile_random_output, FILE=trim(adjustl(i_outputpath)) // trim(adjustl(sfile_random_output)))
       open(kfile_random_params, FILE=trim(adjustl(i_outputpath)) // trim(adjustl(sfile_random_params)))
 
-
      call open_output_randomruns()
 
+      allocate(optid(SUM(paropt(:))))
+      !IDs of parameters to sample
+      jj = 0
+      do ii = 1, vom_npar
+        if (paropt(ii) .gt. 0) then
+          jj = jj + 1
+          optid(jj) = ii
+        endif
+      enddo
 
+      allocate( param_sample( vom_npar ) )
+      allocate( paramset( vom_npar )    )
+      allocate( r( vom_npar )    )
+      
+      paramset = parval(:)
+      
       !loop for n random samples, needs parallelization
       do i_loop=1, i_iter
 
@@ -109,13 +128,13 @@ use vom_vegwat_mod
          call random_number(r)
 
          !make a random parameterset
-         paramset=r*(parmax-parmin)+parmin
+         param_sample=r*(parmax-parmin)+parmin
+
+         paramset(optid) = param_sample(optid)
 
          !run the model with the random set
 
          call transpmodel(paramset, vom_npar, obj, vom_command)
-
-
 
 
          write(kfile_random_output, *) obj
@@ -289,4 +308,5 @@ subroutine close_output_randomruns ()
 
       return
 end subroutine close_output_randomruns
+
 
