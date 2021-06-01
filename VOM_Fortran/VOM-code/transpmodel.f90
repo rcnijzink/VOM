@@ -1207,9 +1207,9 @@
       jmax25t_d(:) = jmax25t_d(2) * (/1.0d0-i_incrjmax,1.0d0,1.0d0+i_incrjmax/)
 !     * making sure that the values don't become too low, otherwise
 !       they could never pick up again
-      jmax25t_d(:) = MAX(jmax25t_d(:), 50.0d-6)
+      jmax25t_d(:) = MAX(jmax25t_d(:), 1.0d-8)
       jmax25g_d(:) = jmax25g_d(2) * (/1.0d0-i_incrjmax,1.0d0,1.0d0+i_incrjmax/)
-      jmax25g_d(:) = MAX(jmax25g_d(:), 50.0d-6)
+      jmax25g_d(:) = MAX(jmax25g_d(:), 1.0d-8)
 
 !     * adjust lai-values trees
       lai_lt(:) = lai_lt(2) * (/1.0d0-i_incrlait,1.0d0,1.0d0+i_incrlait/)
