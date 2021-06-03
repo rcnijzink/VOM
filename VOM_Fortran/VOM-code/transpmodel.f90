@@ -1560,9 +1560,9 @@
             ruptkt__(pos_ult+1:s_maxlayer) = 0.d0
 
             if (SUM(ruptkt__(:)) .gt. 0.d0) then
-              if (etmt__ .gt. SUM(ruptkt__(:))) then
+              if (etmt__ .gt. SUM(ruptkt__(:)) / o_cait ) then
                 changef = 1.d0
-                etmt__   = SUM(ruptkt__(:))
+                etmt__   = SUM(ruptkt__(:)) / o_cait
                 transpt = etmt__ * 55555.555555555555d0  ! (Out[249]) mol/s=m/s*10^6 g/m/(18g/mol)
                 gstomt = transpt / (p_a * vd_h(th_))
               endif
@@ -1592,9 +1592,9 @@
      &                        / rsurfg_(:))) / kunsat_(1:pos_ulg)))
           ruptkg__(pos_ulg+1:s_maxlayer) = 0.d0
           if (SUM(ruptkg__(:)) .gt. 0.d0) then
-            where (etmg__(:,:) .gt. SUM(ruptkg__(:)))
+            where (etmg__(:,:) .gt. SUM(ruptkg__(:)) / caig_d(2)  )
               rootlim(:,:)  = 1.d0
-              etmg__(:,:)   = SUM(ruptkg__(:))
+              etmg__(:,:)   = SUM(ruptkg__(:)) / caig_d(2) 
               transpg(:,:)  = etmg__(:,:) * 55555.555555555555d0  ! (Out[249]) mol/s=m/s*10^6 g/m/(18g/mol)
               gstomg(:,:)   = transpg(:,:) / (p_a * vd_h(th_))
             end where
