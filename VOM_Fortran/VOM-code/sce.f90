@@ -836,7 +836,9 @@ end if
       !$OMP wlayer_, wlayernew, dt_, dtmax, dtsu_count, dtmax_count, esoil__, esoil_h, &
       !$OMP esoil_d, esoil_y, spgfcf__, spgfcf_h, spgfcf_d, inf__, infx__, infx_h, infx_d, &
       !$OMP zw_, zwnew, wc_,  io__, io_h, ioacum, &
-      !$OMP fpar_lt, fpar_lg, lai_lg, lai_lt,&
+      !$OMP fpar_lt, fpar_lg, lai_lg, lai_lt,&      
+      !$OMP ruptkt__, rsurft_, rsurftnew, prootm, ruptkt_d, ruptkt_h, ruptkg_h, ruptkg_d, &
+      !$OMP refft, reffg, ruptkg__, rsurfg_, rsurfgnew, rsoil,      &      
       !$OMP ranscal, bestobj, bestincomp, evolution)
       !$OMP do SCHEDULE(DYNAMIC)
       do m_ = 1, ncomp2
