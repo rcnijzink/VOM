@@ -1698,7 +1698,7 @@
       endif
       if (wlayer_ .ge. 0) then
 !       * (3.35), 1.e6 to convert from m (=1000kg/m2) to g/m2; (Out[250])
-        dmqt = (SUM(ruptkt__(:)) - etmt__) * 1.d6
+        dmqt = ( (SUM(ruptkt__(:))/ o_cait)  - etmt__) * 1.d6
       else
         dmqt = -etmt__ * 1.d6
       endif
