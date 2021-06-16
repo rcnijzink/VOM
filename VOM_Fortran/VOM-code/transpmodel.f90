@@ -1729,7 +1729,7 @@
         endif
 
         if (ABS(mqt_ - mqsst_) .gt. q_mqx / 1.d6) then
-          dtss = (mqt_ - mqsst_) / (1.d6 * (etmt__ - SUM(ruptkt__(:))))
+          dtss = (mqt_ - mqsst_) / (1.d6 * (etmt__ - SUM(ruptkt__(:))/o_cait  ))
           if (dtss .le. 0.d0) dtss = 99999.d0
         else
           dtss = 99999.d0
@@ -1827,8 +1827,10 @@
       implicit none
 
       REAL*8             :: error1
+      REAL*8             :: sumruptkt_h_cor
       CHARACTER(len=135) :: msg
-
+      CHARACTER(len=135) :: msg2
+      
       ioacum = ioacum + io_h
       wsnew  = SUM(cH2Ol_s(:))
       error  = wsold + ioacum - wsnew
@@ -1841,12 +1843,14 @@
         write(*,*) TRIM(msg)
         finish = 1
       elseif (q_md .gt. 0.d0) then
-        error1 = mqtold + (sumruptkt_h - etmt_h/o_cait) * 1.d6 - mqtnew
+        error1 = mqtold + ( (sumruptkt_h/o_cait) - (etmt_h/o_cait)  ) * 1.d6 - mqtnew
         if (abs(error1 / mqtnew) .gt. 1.d-6) then
+          sumruptkt_h_cor = sumruptkt_h/o_cait        
           write(msg,*) 'Error in tree water balance [%]:',             &
-     &      error1 * 100.d0, 'mqtold=', mqtold, 'mqtnew=', mqtnew,     &
-     &      'hruptk=', sumruptkt_h, 'hetm=', etmt_h/o_cait
+     &    error1 * 100.d0, 'mqtold=', mqtold, 'mqtnew=', mqtnew
           write(*,*) TRIM(msg)
+          write(msg2,*) 'hruptk=', sumruptkt_h_cor , 'hetm=', etmt_h
+          write(*,*) TRIM(msg2)
           finish = 1
         endif
       endif
