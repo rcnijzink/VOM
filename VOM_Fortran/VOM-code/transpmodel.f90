@@ -963,10 +963,6 @@
      &               * COS(0.360d0 - ((-1.d0 + ik) * p_pi) / 6.d0) + 0.4632d0 &
      &               * COS(3.805d0 - ((-1.d0 + ik) * p_pi) / 12.d0))
 
-          dayyear(in) = 181
-          i_lon = 117.2
-          i_lat = 46.77
-
           
 !         solar declination (Campbell and Norman, 1998, Eq.11.2)
           delta = ASIN(0.39785*SIN( p_pi*(278.97+0.9856*dayyear(in)+1.9165*SIN( p_pi*(356.6+0.9856*dayyear(in))/180))/180) )
