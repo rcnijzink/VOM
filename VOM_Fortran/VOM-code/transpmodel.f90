@@ -1381,18 +1381,19 @@
       INTEGER:: ii
 
 
-      if (par_h(th_) .gt. 0.d0) then
-!       * adaptation of topt to air temperature during sunlight
-        topt_ = topt_ + i_toptf * (tair_h(th_) + 273.d0 - topt_)
-
 
       select case(i_lai_function)
       case(1)
         fpar_lt(:) = 1.0d0
       case(2)
-!       * fraction of absorbed radiation per crown area (Beer-lambert)
-        kappa = sqrt(i_chi_t**2+tan(phi_zenith(th_))**2)/(i_chi_t+1.774*(i_chi_t+1.182)**(-0.733) ) 
-        fpar_lt(:) = 1.0d0 - p_E ** (-lai_lt(:) * kappa * sqrt(i_alpha_abs) )
+!       * extinction coefficient (Xiao et al. (2015) eq.6, Campbell and Norman (1998) eq. 15.4)
+        kappa = sqrt(i_chi_t**2+tan(phi_zenith(th_))**2)/(i_chi_t+1.774*(i_chi_t+1.182)**(-0.733) )        
+        
+!       * fraction of absorbed radiation per crown area (Beer-lambert, Xiao et al. (2015) eq.5, Campbell and Norman (1998) eq. 15.6)
+        fpar_lt(:) = 1.0d0 - p_E ** (-lai_lt(:) * kappa * sqrt(i_alpha_abs) )   
+        
+        !print *, kappa, phi_zenith(th_), lai_lt(2), fpar_lt(2), nhour, par_h(th_)
+        
       end select
 
 !       * calculate electron transport capacity trees
@@ -1405,10 +1406,15 @@
       case(1)
         fpar_lg(:) = 1.0d0
       case(2)
-!       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
+!       * extinction coefficient, Xiao et al. (2015)
         kappa = sqrt(i_chi_g**2+tan(phi_zenith(th_))**2)/(i_chi_g+1.774*(i_chi_g+1.182)**(-0.733) ) 
+!       * fraction of absorbed radiation per crown area grasses (Beer-lambert)
         fpar_lg(:) = 1.0d0 - p_E ** (-lai_lg(:) * kappa * sqrt(i_alpha_abs) )
       end select
+
+      if (par_h(th_) .gt. 0.d0) then
+!       * adaptation of topt to air temperature during sunlight
+        topt_ = topt_ + i_toptf * (tair_h(th_) + 273.d0 - topt_)
 
 
 !       * calculate electron transport capacity grasses
@@ -1479,8 +1485,6 @@
         jactg(:,:)  = 0.d0
         gstomg(:,:) = 0.d0
         etmg__(:,:) = 0.d0
-        fpar_lg(:) = 0.d0
-        fpar_lt(:) = 0.d0
         
       endif
 
@@ -1807,9 +1811,9 @@
       infx_d   = infx_d   + infx_h
       rlt_d    = rlt_d    + rlt_h(2)   * 3600.d0  ! rlt_d in mol/day
       rlg_d    = rlg_d    + rlg_h(2) * 3600.d0
-      fpard_lg = fpard_lg + fpar_lg(2) / 24d0 !mean fpar per day
-      fpard_lt = fpard_lt + fpar_lt(2) / 24d0 !mean fpar per day
-      
+      fpard_lg = fpard_lg + (fpar_lg(2) / 24d0) !mean fpar per day
+      fpard_lt = fpard_lt + (fpar_lt(2) / 24d0) !mean fpar per day
+
       return
       end subroutine vom_add_daily
 
