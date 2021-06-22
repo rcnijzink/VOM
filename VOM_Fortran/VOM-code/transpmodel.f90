@@ -1252,8 +1252,8 @@
 
 
 !     * (3.42, 2.45e-10 from (Out[165])) costs of water distribution and storage
-      q_cpcct_d = i_cpccft * (o_cait *i_heightt + o_rtdepth * aitot) + o_mdstore * 2.45d-10
-      cpccg_d(:) = i_cpccfg * (caig_d(:) * i_heightg + o_rgdepth * aitot )  ! (3.42) water transport costs
+      q_cpcct_d = i_cpccft * o_cait * o_rtdepth  + o_mdstore * 2.45d-10
+      cpccg_d(:) = i_cpccfg * caig_d(:) * o_rgdepth   ! (3.42) water transport costs
 
 
 !     * (3.40), (Out[190]) root respiration grasses [mol/s]
