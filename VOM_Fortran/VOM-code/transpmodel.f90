@@ -144,7 +144,7 @@
         call vom_add_daily()
         call vom_write_hourly(fyear(nday), fmonth(nday), fday(nday), nday, nhour, th_,          &
              &    rain_h(th_), tair_h(th_), par_h(th_), vd_h(th_), esoil_h,    &
-             &    fpar_lt(2)*o_cait + fpar_lg(2)*caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_,          &
+             &    fpar_lt(2)*o_cait + fpar_lg(2)*caig_d(2), jmax25t_d(2), jmax25g_d(2), mqt_*o_cait,          &
              &    rlt_h(2) + rlg_h(2), lambdat_d, lambdag_d, rrt_d + rrg_d,  &
              &    asst_h(2,2), assg_h(2,2,2), etmt_h, etmg_h, su__(1), zw_, wsnew, &
              &    spgfcf_h, infx_h, ruptkt_h, su__, i_write_nc)
@@ -215,7 +215,7 @@
              &  vd_d / 24.d0, esoil_d, jmax25t_d(2), jmax25g_d(2),             &
              &  fpard_lt*o_cait + fpard_lg*caig_d(2),                            &
              &  fpard_lt, fpard_lg, caig_d(2),                                   &
-             &  rlt_d , rlg_d, lambdat_d, lambdag_d,                           &
+             &  rlt_d*o_cait , rlg_d*caig_d(2), lambdat_d, lambdag_d,                           &
              &  rrt_d * 3600.d0 * 24.d0, rrg_d * 3600.d0 * 24.d0, asst_d(2,2), &
              &  assg_d(2,2,2), SUM(su__(1:wlayer_)) / wlayer_, zw_, wsnew,     &
              &  spgfcf_d, infx_d, etmt_d, etmg_d, su__(1), topt_,              &
@@ -1062,7 +1062,7 @@
 
 !     * Set vegetation parameters
 
-      q_md   = i_mdtf + o_mdstore
+      q_md   = i_mdtf + o_mdstore/o_cait
       q_mqx  = q_md * i_mqxtf
       mqtnew = 0.95d0 * q_mqx                  ! initial wood water storage
       mqtold = mqtnew
@@ -1567,7 +1567,7 @@
                 gstomt = transpt / (p_a * vd_h(th_))
               endif
 !             * Setting SUM(ruptkt__)=etmt__ and distributing according to relative uptake:
-              ruptkt__(:) = etmt__ * (ruptkt__(:) / (SUM(ruptkt__(:))))
+              ruptkt__(:) = etmt__ * o_cait * (ruptkt__(:) / (SUM(ruptkt__(:))))
             else
               ruptkt__(:) = 0.d0
               changef     = 1.d0
@@ -1598,7 +1598,7 @@
               transpg(:,:)  = etmg__(:,:) * 55555.555555555555d0  ! (Out[249]) mol/s=m/s*10^6 g/m/(18g/mol)
               gstomg(:,:)   = transpg(:,:) / (p_a * vd_h(th_))
             end where
-            ruptkg__(1:pos_ulg) = etmg__(2,2) * (ruptkg__(1:pos_ulg)   &
+            ruptkg__(1:pos_ulg) = etmg__(2,2) * caig_d(2) * (ruptkg__(1:pos_ulg)   &
      &                          / (SUM(ruptkg__(:))))
           else
             ruptkg__(:)  = 0.d0
@@ -1698,7 +1698,7 @@
       endif
       if (wlayer_ .ge. 0) then
 !       * (3.35), 1.e6 to convert from m (=1000kg/m2) to g/m2; (Out[250])
-        dmqt = ( (SUM(ruptkt__(:))/ o_cait)  - etmt__) * 1.d6
+        dmqt = ( (SUM(ruptkt__(:))/o_cait )  - etmt__) * 1.d6
       else
         dmqt = -etmt__ * 1.d6
       endif
@@ -2138,6 +2138,7 @@
             jmax25g_tmp = jmax25g_d(posbest(2))              !jmax25 grasses in temporary variable
             max_netcg = max_netcg_tmp                       !new NCP is higher as previous
             posmna = (/ posbest , ii /)
+            
          end if
       end do
 
